@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const user = require('../models/user'); // your mongoose model
+const User = require('../models/user'); // your mongoose model
 
 router.post('/signup', async (req, res) => {
   try {
@@ -8,7 +8,7 @@ router.post('/signup', async (req, res) => {
     if (!email || !password || !username || !phone) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
-    const exists = await user.findOne({ email });
+    const exists = await User.findOne({ email });
     if (exists) return res.status(409).json({ error: 'User already exists' });
     const user = new User({ username, email, phone, password });
     await user.save();
@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Email and password required' });
     }
 
-    const user = await user.findOne({ email });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ error: 'User not found' });
     }
