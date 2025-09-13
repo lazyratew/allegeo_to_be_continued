@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User'); // your mongoose model
+const User = require('../models/user'); // your mongoose model
 
 router.post('/signup', async (req, res) => {
   try {
