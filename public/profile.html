@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Allergy Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --burgundy: #5e0818;
+      --white: #ffffff;
+      --gold: #d4af37;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--white);
+      color: var(--burgundy);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav {
+      background-color: var(--gold);
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--burgundy);
+    }
+
+    .nav-icon {
+      font-size: 1.4rem; 
+      color: var(--burgundy);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 600px;
+      margin: 2rem auto 6rem;
+      padding: 1rem;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      border-bottom: 2px solid #ccc;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+    }
+
+    .tabs button,
+    .tabs a {
+      background: none;
+      border: none;
+      font-weight: 500;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--burgundy);
+      padding-bottom: 0.2rem;
+    }
+
+    .tabs .active {
+      border-bottom: 2px solid var(--burgundy);
+      font-weight: bold;
+    }
+
+    .add-allergy-btn {
+      display: block;
+      text-align: center;
+      background-color: var(--burgundy);
+      color: var(--white);
+      padding: 0.8rem;
+      border-radius: 0.75rem;
+      text-decoration: none;
+      margin-bottom: 2rem;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .add-allergy-btn:hover {
+      background-color: var(--white);
+      color: var(--gold);
+      border: 2px solid var(--gold);
+    }
+
+    .card {
+      background-color: var(--white);
+      border: 2px solid var(--gold);
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+      margin-bottom: 1rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .severity {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .dot.red {
+      background-color: red;
+    }
+
+    .dot.orange {
+      background-color: orange;
+    }
+
+    .dot.green {
+      background-color: green;
+    }
+
+    /* Floating Scan Button */
+    .scan-btn {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      background-color: var(--burgundy);
+      color: var(--white);
+      padding: 1rem;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.2s ease;
+      text-decoration: none;
+    }
+
+    .scan-btn:hover {
+      background-color: var(--gold);
+      color: var(--burgundy);
+    }
+
+    /* Bottom Nav */
+    footer {
+      background-color: var(--white);
+      padding: 0.7rem 1rem;
+      display: flex;
+      justify-content: space-around;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    footer a {
+      font-size: 1.5rem;
+      text-decoration: none;
+      color: var(--burgundy);
+    }
+
+    footer a.active {
+      color: var(--gold);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-title">Allegeo</div>
+    <a href=login.html class="nav-icon">Logout</a>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main">
+    <h1>Your Allergy Profile</h1>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="active">My Allergies</button>
+      <a href="compare.html">Compare</a>
+      <a href="dashboard.html">Edit Profile</a>
+    </div>
+
+    <!-- Add Allergy -->
+    <a href="dashboard.html" class="add-allergy-btn">+ Add New Allergy</a>
+
+    <!--  Sample of what the Allergy Cards look like-->
+    <!-- <div class="card">
+      <div class="card-header">
+        <h2>Peanuts</h2>
+        <span class="text-sm">Added 3 weeks ago</span>
+      </div>
+      <div class="severity">
+        <div class="dot red"></div>
+        <span>Severity: High</span>
+      </div>
+    </div> -->
+
+
+  <!-- Scan Button -->
+  <a href="scan_page.html" class="scan-btn">📷</a>
+
+  <!-- Bottom Navigation -->
+  <footer>
+    <a href="#" class="active">🏠</a>
+    <a href="scan_page.html">📷</a>
+    <a href="#">⚙️</a>
+  </footer>
+
+  <script>
+    // TODO: Replace with real email from login/session
+    const userEmail = localStorage.getItem('userEmail') || "test@example.com";
+
+    async function loadAllergies() {
+      try {
+        const res = await fetch(`/userinfo/profile?email=${encodeURIComponent(userEmail)}`);
+        if (!res.ok) throw new Error('Failed to fetch allergies');
+
+        const data = await res.json();
+        const allergies = data.allergies || {};
+
+        // Remove any old cards before adding new
+        document.querySelectorAll(".card").forEach(el => el.remove());
+
+        // Loop through allergies map and create cards
+        Object.entries(allergies).forEach(([allergen, severity]) => {
+          const card = `
+          <div class="card">
+            <div class="card-header">
+              <h2>${allergen}</h2>
+              <span class="text-sm">${new Date().toLocaleDateString()}</span>
+            </div>
+            <div class="severity">
+              <div class="dot ${severity.toLowerCase()}"></div>
+              <span>Severity: ${severity}</span>
+            </div>
+          </div>
+        `;
+          document.querySelector(".add-allergy-btn").insertAdjacentHTML("afterend", card);
+        });
+      } catch (err) {
+        console.error("Error loading allergies:", err);
+      }
+    }
+
+    // Load on page load
+    loadAllergies();
+  </script>
+
+</body>
+
+</html>

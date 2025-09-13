@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Allegeo - fighting allergies one scan at a time</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    :root {
+      --burgundy: #5e0818;
+      --white: #ffffff;
+      --gold: #d4af37;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--white);
+      color: var(--burgundy);
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    /* NAVIGATION */
+    nav {
+      background-color: var(--white);
+      padding: 1rem 1.5rem;
+      position: fixed;
+      width: 100%;
+      z-index: 10;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--burgundy);
+    }
+
+    .nav-logo svg {
+      margin-right: 0.5rem;
+    }
+
+    .nav-links a {
+  margin-left: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  transition: 0.2s ease-in-out;
+  display: inline-block;
+}
+
+.nav-links a:hover {
+  transform: translateY(-3px);
+}
+
+
+    .nav-links .login {
+      color: var(--burgundy);
+    }
+
+    .nav-links .login:hover {
+      background-color: #f5f5f5;
+    }
+
+    .nav-links .signup {
+      background-color: var(--burgundy);
+      color: var(--white);
+    }
+
+    .nav-links .signup:hover {
+      background-color: var(--gold);
+      color: var(--burgundy);
+    }
+
+    /* HERO SECTION */
+    .hero {
+      background: linear-gradient(140deg, var(--burgundy) 30%, var(--gold) 100%);
+      color: var(--white);
+      padding: 8rem 1.5rem 5rem;
+    }
+
+    .hero-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .hero-container {
+        flex-direction: row;
+        align-items: center;
+      }
+    }
+
+    .hero-text {
+      flex: 1;
+    }
+
+    .hero-text h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .hero-text p {
+      font-size: 1.125rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+    }
+
+    .hero-text a {
+      background-color: var(--white);
+      color: var(--burgundy);
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      display: inline-block;
+      transition: 0.2s;
+    }
+
+    .hero-text a:hover {
+      background-color: var(--gold);
+      color: var(--white);
+    }
+
+    .hero-image {
+      flex: 1;
+      text-align: center;
+    }
+
+    .hero-image img {
+      max-width: 100%;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    /* FEATURES SECTION */
+    .features {
+      padding: 4rem 1.5rem;
+      background-color: var(--white);
+    }
+
+    .features h2 {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 3rem;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background-color: #fff;
+      border: 2px solid var(--burgundy);
+      border-radius: 1rem;
+      padding: 2rem;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(94, 8, 24, 0.3);
+    }
+
+    .feature-card .icon-wrapper {
+      width: 3.5rem;
+      height: 3.5rem;
+      background-color: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+    }
+
+    .feature-card .icon-wrapper i {
+      color: var(--white);
+      font-size: 1.5rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-card p {
+      font-size: 1rem;
+      color: var(--burgundy);
+    }
+
+    /* CTA */
+    .cta {
+      background-color: var(--burgundy);
+      color: var(--white);
+      padding: 4rem 1.5rem;
+      text-align: center;
+    }
+
+    .cta h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .cta p {
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+    }
+
+    .cta a {
+      background-color: var(--gold);
+      color: var(--burgundy);
+      padding: 0.75rem 2rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      display: inline-block;
+      transition: 0.2s;
+    }
+
+    .cta a:hover {
+      background-color: var(--white);
+      color: var(--burgundy);
+    }
+
+    /* FOOTER */
+    footer {
+      background-color: var(--white);
+      border-top: 2px solid var(--burgundy);
+      padding: 2rem 1.5rem;
+      color: var(--burgundy);
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    @media (min-width: 768px) {
+      .footer-container {
+        flex-direction: row;
+      }
+    }
+
+    footer a {
+      color: var(--burgundy);
+      margin: 0 0.5rem;
+      transition: color 0.2s;
+    }
+
+    footer a:hover {
+      color: var(--gold);
+    }
+
+    .copy {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-container">
+    <div class="nav-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+      </svg>
+      Allegeo
+    </div>
+    <div class="nav-links">
+      <a href="login.html" class="login">Login</a>
+      <a href="signup.html" class="signup">Sign Up</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-container">
+    <div class="hero-text">
+      <h1>Know your food</h1>
+      <p>Allegeo protects you by scanning packaged food products and ingredients for allergens based on your personalized allergy profile.</p>
+      <a href="signup.html">Create Free Account</a>
+    </div>
+    <div class="hero-image">
+      <img src="https://cdn-prod.medicalnewstoday.com/content/images/articles/320/320257/peanut-allergy.jpg" alt="Peanut Allergy">
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <h2>How Allegeo Protects You</h2>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="icon-wrapper"><i class="fas fa-user-shield"></i></div>
+      <h3>Personalized Profiles</h3>
+      <p>Create detailed allergy profiles for yourself and family members to ensure comprehensive protection.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon-wrapper"><i class="fas fa-camera"></i></div>
+      <h3>Instant Scanning</h3>
+      <p>Scan product ingredients lists to detect allergens in seconds.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon-wrapper"><i class="fas fa-bell"></i></div>
+      <h3>Smart Alerts</h3>
+      <p>Get immediate warnings about potential allergens based on your specific sensitivities.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Ready to Take Control of Your Allergies?</h2>
+  <p>Join Alleraid to help make safe food choices every day.</p>
+  <a href="signup.html">Start Protecting Yourself Now</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-container">
+    <div class="nav-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+      </svg>
+      Allegeo
+    </div>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy</a>
+      <a href="#">Contact</a>
+      <a href="#">FAQ</a>
+    </div>
+  </div>
+  <div class="copy">&copy; 2025 Allegeo. All rights reserved.</div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feedback - Allegeo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --burgundy: #5e0818;
+      --white: #ffffff;
+      --gold: #d4af37;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--white);
+      color: var(--burgundy);
+      margin: 0;
+      padding: 0;
+    }
+
+    nav {
+      background-color: var(--gold);
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--burgundy);
+    }
+
+    .nav-link {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      text-decoration: none;
+      color: var(--burgundy);
+    }
+
+    .nav-underline {
+      height: 6px;
+      background-color: var(--burgundy);
+      width: 100%;
+    }
+
+    main {
+      max-width: 600px;
+      margin: 4rem auto;
+      padding: 2rem;
+      border-radius: 1rem;
+      border: 5px solid var(--gold);
+      box-shadow:
+        0 0 30px 10px rgba(255, 255, 255, 0.6),
+        0 0 50px 20px rgba(255, 255, 255, 0.4);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 0.2rem;
+      margin-top: 0.5rem;
+      border: 2px solid var(--burgundy);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      background-color: var(--burgundy);
+      color: var(--white);
+      border: none;
+      padding: 0.6rem 1.5rem;
+      border-radius: 999px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: var(--white);
+      color: var(--gold);
+    }
+
+    .success {
+      text-align: center;
+      margin-top: 1rem;
+      color: green;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="nav-title">Allegeo</div>
+    <a href="index.html" class="nav-link">Home</a>
+  </nav>
+  <div class="nav-underline"></div>
+
+  <main>
+    <h2>Feedback</h2>
+    <form id="feedbackForm">
+      <label for="email">Your Email (optional)</label>
+      <input type="email" id="email" placeholder="you@example.com" />
+
+      <label for="message">Your Message</label>
+      <textarea id="message" rows="5" placeholder="Let us know what we can work on..."></textarea>
+
+      <button type="submit">Send Feedback</button>
+      <div id="status" class="Thank you for your feedback!"></div>
+    </form>
+  </main>
+
+  <script>
+    document.getElementById('feedbackForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+      const statusEl = document.getElementById('status');
+
+      if (!message) {
+        statusEl.textContent = 'Please enter a message.';
+        statusEl.style.color = 'red';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/user/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, message })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          statusEl.textContent = 'Thank you for your feedback!';
+          statusEl.style.color = 'green';
+          this.reset();
+        } else {
+          statusEl.textContent = data.error || 'Submission failed.';
+          statusEl.style.color = 'red';
+        }
+      } catch (err) {
+        console.error('Feedback error:', err);
+        statusEl.textContent = 'Network error.';
+        statusEl.style.color = 'red';
+      }
+    });
+  </script>
+
+
+</body>
+</html>

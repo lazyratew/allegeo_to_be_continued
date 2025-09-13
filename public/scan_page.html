@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scan Ingredients</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --burgundy: #5e0818;
+      --white: #ffffff;
+      --gold: #d4af37;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--burgundy);
+      background: linear-gradient(to bottom right, #fffdf5, #fdf7e6);
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--burgundy);
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #5e0818b3;
+    }
+
+    .container {
+      max-width: 768px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .card {
+      background-color: var(--white);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      border: 2px solid var(--gold);
+    }
+
+    .card h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--burgundy);
+    }
+
+    input[type="file"],
+    textarea {
+      width: 100%;
+      padding: 0.2rem;
+      border: 2px solid var(--burgundy);
+      border-radius: 0.5rem;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      background-color: var(--burgundy);
+      color: var(--white);
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: var(--white);
+      color: var(--gold);
+      border: 2px solid var(--gold);
+    }
+
+    #ocrResult,
+    #manualResult {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Scan Ingredients</h1>
+    <p>Upload a photo or enter ingredients manually</p>
+
+    <!-- Camera Scan -->
+    <div class="card">
+      <h2>📸 Camera Scan</h2>
+      <input id="imageUpload" type="file" accept="image/*" capture="environment">
+      <div id="previewContainer"></div>
+      <button onclick="processImage()">Analyze Image</button>
+      <p id="ocrResult"></p>
+    </div>
+
+    <!-- Manual Entry -->
+    <div class="card">
+      <h2>🖊️ Manual Entry</h2>
+      <textarea id="manualInput" rows="4" placeholder="Enter ingredients list here..."></textarea>
+      <button onclick="analyzeManualInput()">Analyze Ingredients</button>
+      <p id="manualResult"></p>
+    </div>
+  </div>
+
+  <script>
+    function processImage() {
+      const fileInput = document.getElementById("imageUpload");
+      const file = fileInput.files[0];
+      if (!file) return alert("Please upload an image first");
+
+      const reader = new FileReader();
+      reader.onloadend = function () {
+        const base64Image = reader.result.split(',')[1]; // remove metadata
+        sendToServer(base64Image);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function sendToServer(base64Image) {
+      fetch('/api/scan/analyze-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageBase64: base64Image }),
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById('ocrResult').textContent = data.text;
+          } else {
+            document.getElementById('ocrResult').textContent = 'Error processing image.';
+          }
+        })
+        .catch(err => {
+          console.error('Error:', err);
+          alert('Failed to analyze image.');
+        });
+    }
+
+    function analyzeManualInput() {
+      const input = document.getElementById("manualInput").value;
+      document.getElementById("manualResult").textContent = `You entered:\n${input}`;
+    }
+  </script>
+
+
+</body>
+
+</html>
