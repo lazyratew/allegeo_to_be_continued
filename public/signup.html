@@ -234,6 +234,7 @@
         const result = await res.json();
         if (res.ok) {
           alert("Signup successful!");
+          localStorage.setItem('userEmail', data.email); 
           window.location = '/dashboard.html';
         } else {
           alert("Signup failed: " + result.error);
