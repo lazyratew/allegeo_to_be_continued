@@ -11,7 +11,7 @@
       --burgundy: #5e0818;
       --white: #ffffff;
       --gold: #d4af37;
-    }  
+    }
 
     * {
       margin: 0;
@@ -221,9 +221,8 @@
       const data = await res.json();
 
       if (res.ok) {
-        alert("Login successful!");
-        localStorage.setItem('userEmail', result.email); 
-        window.location.href = 'profile.html'; 
+        localStorage.setItem('userEmail', result.email);
+        window.location.replace("profile.html");
       } else {
         alert("Login failed: " + result.error);
       }
