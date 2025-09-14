@@ -241,10 +241,11 @@
   <script>
     // TODO: Replace with real email from login/session
     const userEmail = localStorage.getItem('userEmail') || "test@example.com";
+    const BACKEND_URL="https://allegeo-to-be-continued.onrender.com"
 
     async function loadAllergies() {
       try {
-        const res = await fetch(`/userinfo/profile?email=${encodeURIComponent(userEmail)}`);
+        const res = await fetch(`${BACKEND_URL}/userinfo/profile?email=${encodeURIComponent(userEmail)}`);
         if (!res.ok) throw new Error('Failed to fetch allergies');
 
         const data = await res.json();

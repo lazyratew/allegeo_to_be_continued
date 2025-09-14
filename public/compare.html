@@ -153,7 +153,7 @@
     let userAllergies = {};
 
     async function loadUserAllergies() {
-      const res = await fetch(`/userinfo/profile?email=${encodeURIComponent(userEmail)}`);
+      const res = await fetch(`/userinfo/profile?email=${encodeURIComponent(userEmail)}`); //edit fetch with render backend
       const data = await res.json();
       userAllergies = data.allergies || {};
     }
@@ -162,8 +162,8 @@
       const query = document.getElementById("searchInput").value;
       if (!query) return;
 
-      const res = await fetch(`/products/search?q=${encodeURIComponent(query)}`);
-      const products = await res.json();
+      const res = await fetch(`/products/search?q=${encodeURIComponent(query)}`); // edit fetch with render backend as well
+      const products = await res.json(); 
 
       const resultsDiv = document.getElementById("results");
       resultsDiv.innerHTML = "";

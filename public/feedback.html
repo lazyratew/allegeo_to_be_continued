@@ -133,6 +133,7 @@
     document.getElementById('feedbackForm').addEventListener('submit', async function (e) {
       e.preventDefault();
 
+      const BACKEND_URL="https://allegeo-to-be-continued.onrender.com"
       const email = document.getElementById('email').value.trim();
       const message = document.getElementById('message').value.trim();
       const statusEl = document.getElementById('status');
@@ -144,7 +145,7 @@
       }
 
       try {
-        const res = await fetch('/api/user/feedback', {
+        const res = await fetch(`${BACKEND_URL}/api/user/feedback`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, message })

@@ -11,7 +11,7 @@
       --burgundy: #5e0818;
       --white: #ffffff;
       --gold: #d4af37;
-    }
+    }  
 
     * {
       margin: 0;
@@ -208,10 +208,11 @@
     document.getElementById('loginForm').addEventListener('submit', async function (e) {
       e.preventDefault();
 
+      const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com"
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })

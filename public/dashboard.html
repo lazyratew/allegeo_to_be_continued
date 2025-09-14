@@ -268,12 +268,14 @@
   </main>
 
   <script>
+    const BACKEND_URL="https://allegeo-to-be-continued.onrender.com";
+
     window.addEventListener('DOMContentLoaded', async () => {
       const email = localStorage.getItem('userEmail');
       if (!email) return alert('Not logged in');
 
       try {
-        const res = await fetch(`/api/user/profile?email=${email}`);
+        const res = await fetch(`${BACKEND_URL}/api/user/profile?email=${email}`);
         const { allergies } = await res.json();
         for (const [allergen, level] of Object.entries(allergies || {})) {
           if (!addedAllergies.has(allergen)) {
@@ -373,7 +375,7 @@
         return;
       }
 
-      fetch('/api/user/profile', {
+      fetch(`${BACKEND_URL}/api/user/profile`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, allergies: data })
