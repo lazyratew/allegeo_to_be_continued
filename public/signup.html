@@ -225,7 +225,7 @@
           return;
         }
 
-        const res = await fetch(`${BACKEND_URL}/api/auth/signup`, { //continue here, add backend render link
+        const res = await fetch(`${BACKEND_URL}/api/auth/signup`, { 
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, email, phone: number, password })
@@ -245,5 +245,4 @@
 
 
 </body>
-
 </html>

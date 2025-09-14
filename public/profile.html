@@ -245,7 +245,7 @@
 
     async function loadAllergies() {
       try {
-        const res = await fetch(`${BACKEND_URL}/userinfo/profile?email=${encodeURIComponent(userEmail)}`);
+        const res = await fetch(`${BACKEND_URL}/api/user/profile?email=${encodeURIComponent(userEmail)}`);
         if (!res.ok) throw new Error('Failed to fetch allergies');
 
         const data = await res.json();
