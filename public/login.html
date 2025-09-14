@@ -222,12 +222,10 @@
 
       if (res.ok) {
         alert("Login successful!");
-        localStorage.setItem('userEmail', email);
-        window.location.href = 'profile.html';
-        localStorage.setItem('userEmail', data.email); // store for dashboard or profile access
-        window.location.href = '/profile.html'; // or wherever your profile is
+        localStorage.setItem('userEmail', result.email); 
+        window.location.href = 'profile.html'; 
       } else {
-        alert("Login failed: " + data.error);
+        alert("Login failed: " + result.error);
       }
     });
   </script>
