@@ -6,36 +6,32 @@ const vision = require('@google-cloud/vision');
 // Load env variables
 require('dotenv').config();
 
+// Initialize Vision API client
 const client = new vision.ImageAnnotatorClient({
   credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS)
 });
-// POST route for processing OCR image
+
 router.post('/analyze-image', async (req, res) => {
-    try {
-        const { imageBase64, email } = req.body;
+  try {
+    const { imageBase64, email } = req.body;
 
-        const response = await axios.post(VISION_ENDPOINT, {
-            requests: [
-                {
-                    image: { content: imageBase64 },
-                    features: [{ type: 'TEXT_DETECTION' }],
-                },
-            ],
-        });
+    const [result] = await client.textDetection({
+      image: { content: imageBase64 }
+    });
 
-        const text = response.data.responses[0]?.fullTextAnnotation?.text || "No text detected.";
-        res.json({ success: true, text });
-        // to save scan to DB
-        await Scan.create({
-            email: req.body.email || "anonymous",
-            scannedText: text,
-        });
+    const text = result.fullTextAnnotation?.text || "No text detected.";
 
+    // Save scan result to DB
+    await Scan.create({
+      email: email || "anonymous",
+      scannedText: text,
+    });
 
-    } catch (err) {
-        console.error('Vision API error:', err.message);
-        res.status(500).json({ success: false, message: 'Failed to process image.' });
-    }
+    res.json({ success: true, text });
+
+  } catch (err) {
+    console.error('Vision API error:', err.message);
+    res.status(500).json({ success: false, message: 'Failed to process image.' });
+  }
 });
-
 module.exports = router;
