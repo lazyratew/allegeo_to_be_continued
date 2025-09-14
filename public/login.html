@@ -221,15 +221,13 @@
       const data = await res.json();
 
       if (res.ok) {
-        localStorage.setItem('userEmail', result.email);
+        localStorage.setItem('userEmail', data.email);
         window.location.replace("profile.html");
       } else {
-        alert("Login failed: " + result.error);
+        alert("Login failed: " + data.error);
       }
     });
   </script>
 
-
 </body>
-
 </html>
