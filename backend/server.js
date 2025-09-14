@@ -16,7 +16,8 @@ const app = express();
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({
-  origin: 'https://allegeo.netlify.app/', // replace with your Netlify URL
+  origin: 'https://allegeo.netlify.app', //front-end deployed with netlify, through github
+  methods: ["GET", "POST", "PUT", "DELETE"], 
   credentials: true
 }));
 app.use(express.json()); // for parsing application/json
