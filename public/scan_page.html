@@ -134,7 +134,8 @@
     }
 
     function sendToServer(base64Image) {
-      fetch('/api/scan/analyze-image', {
+      const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com";
+      fetch(`${BACKEND_URL}/api/scan/analyze-image`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ imageBase64: base64Image }),
