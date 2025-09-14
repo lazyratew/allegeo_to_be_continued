@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "cosmic-octane-468115-v9",
+  "private_key_id": "d2b05ad32da4491c8badf5203bfdaff9e262f1e3",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDEsHObglLUaoPB\n9zzis8QqmnOonISshopjsb6VrhT+W8Lo0DyNnrBu5tX3viac5zFp4NRZy+9pqZAJ\nXzrvFRAIZYLHXrd6v13RvZer3v5V4VpB8JlcWFqLnY6gbElVTb9fowDNtM3O4yB+\nrOVm/PSqPnCTVDe5gAPL5lYIs0SgwPu4bXE1l0I5yI8O7mBEx5WKf/ylEfjs0GCU\n3rFxHuSnBRAye7DJ0k7Rxd8942fw6+F6A68eS+YKxtXf9EyucBSJSrIEFi16euvQ\ndcPc+yzhZ7yBcA7nQas18slt7yEkwu5OgmGEVjr2ZgY8050V/gB4Tk1+iUL5pzT+\n7Ps/KkXDAgMBAAECggEAVSqYbHIyXnLeqWreTMWNP+tQAGcBldjN7Jwmy5Ys1fSy\nwW+FgMcBW4wNgzAtdQwwm8lz+YvyF10KFtzK3oJOxmv6BE0Rgo+BVtPS7GNq2pHx\nLJM7PL6vOjwXaYRp/otjPcyNiQTshtRXGjLQRFdss5jE0y6I0IRLYItUnoDNSxNx\nDVfJhTVNKJ7ITbc+5DCumgE/dx4odhzOx3XKOM1U+kwyCpf1OjknO2uexnLtfyrR\nKI/ANn6aJesgsCBxt+h94ztWqZB8/oL85k2UGtbBfh1nb/GkgRdbRHjbtJSDFMRs\nwqpTA/cjfmYhXqL6AuzEyahJUVBBCQ7AzaZfBeyQzQKBgQD/wvtvzOg1RZJh8Miw\nAuXn3RKsMzeVIGO/TdSAi1kyKJk/tUvg0SKmYTP+DZCNQ7FED7JOlBUkD7APQfDm\nHDnbHcIpCyTEqUiFxXVHt8F4tJaO2lY/Ii/asVvh6o23vVyjMMOHHdpund8gC8Tb\nxruImZgiWyUmXW83FkRKIshoPwKBgQDE32BX2bQRTrHyvvNCRD1tHYWMz7/cuJ/z\n57GcIdEsmqNT+Ingoctz6bZ49hpx5zpni8413yxKtNe4ksooaDvvw6H1NJ353ptq\nYlK23GAuTkAvIjMGwtjcOXpBfdSbXY/XKA5XkmJPIXpwPbq2RL0FDrMJ0mp0fgR9\nqfNndFDhfQKBgH/WAIEYJTSDSrBjfpvjRvDGog+qJe0G3HSBPWbmv7V/b2HVh1Ce\nl7gbu7YPJ6JEJHVFdzUpdQuqP7DQn80UbKKl1CdZp44YouQiFwW6xhxD/0D1xsgV\nmV+w6KEZ8K3XG1eCBykg9c32YNEOsN29Dn0vcEgz0HTFnNIm8gkwK4VXAoGBAJjt\nW41iUvnOw3Po2FV1ZLHJ6N/E0SjHUZjJNbIuoqmfRZgIzDFt/PiBZ3j20vv/veKJ\nOxmlzmYJrDh37gkNTuGkeb5brQtX3Cn7Tn01GpFdv4Xdbv2lhYcsLseI0woM15su\nRlXIJA2L1+wwR0UmiB3RmUnb5U2wRhTHW4fVVq6RAoGBAOiItScxuNPS+VPYaoOr\n0lc6qufzIqdjVokMBpvxw/5WF948ihEKtWJxBqGQ7Ph8lV4hvUX87AMxgNsW7wXV\nYRoobNYqaQHlrX9E9V/TSqobr9NEfp77bDv7NVkEqCDlRLoL+oE1vEld+IiGPxsX\nuz37XDkM+FPkETp5rP5dF2pO\n-----END PRIVATE KEY-----\n",
+  "client_email": "lazarus@cosmic-octane-468115-v9.iam.gserviceaccount.com",
+  "client_id": "112460949364499723509",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/lazarus%40cosmic-octane-468115-v9.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
