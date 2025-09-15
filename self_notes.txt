@@ -1,0 +1,2 @@
+keep testing scan_page until the OCR works normally
+- add compare page 
