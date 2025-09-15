@@ -7,6 +7,7 @@ const axios = require('axios');
 require('dotenv').config();
 
 const OCR_SPACE_API = "https://api.ocr.space/parse/image";
+const apiKey = process.env.OCR_SPACE_API;
 
 router.post('/analyze-image', async (req, res) => {
   try {
