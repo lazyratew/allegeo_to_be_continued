@@ -1,37 +1,41 @@
+//the api being used is OCR.SPACE api, NOT google cloud vision
 const express = require('express');
 const router = express.Router();
-const Scan = require('../models/scan'); // Import scan model
-const vision = require('@google-cloud/vision');
+const Scan = require('../models/scan');
+const axios = require('axios'); 
 
-// Load env variables
 require('dotenv').config();
 
-// Initialize Vision API client
-const client = new vision.ImageAnnotatorClient({
-  credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS)
-});
+const OCR_SPACE_API = "https://api.ocr.space/parse/image";
 
 router.post('/analyze-image', async (req, res) => {
   try {
     const { imageBase64, email } = req.body;
 
-    const [result] = await client.textDetection({
-      image: { content: imageBase64 }
-    });
+    const response = await axios.post(
+      OCR_SPACE_API,
+      new URLSearchParams({
+        apikey: process.env.OCR_SPACE_API_KEY, // stored in Render env
+        base64Image: `data:image/png;base64,${imageBase64}`,
+        language: "eng"
+      }),
+      { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+    );
 
-    const text = result.fullTextAnnotation?.text || "No text detected.";
+    const parsedResult = response.data?.ParsedResults?.[0]?.ParsedText || "No text detected.";
 
     // Save scan result to DB
     await Scan.create({
       email: email || "anonymous",
-      scannedText: text,
+      scannedText: parsedResult,
     });
 
-    res.json({ success: true, text });
+    res.json({ success: true, text: parsedResult });
 
   } catch (err) {
-    console.error('Vision API error:', err.message);
+    console.error('OCR.Space error:', err.message);
     res.status(500).json({ success: false, message: 'Failed to process image.' });
   }
 });
+
 module.exports = router;
