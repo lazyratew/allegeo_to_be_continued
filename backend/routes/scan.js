@@ -16,7 +16,7 @@ router.post('/analyze-image', async (req, res) => {
     const response = await axios.post(
       OCR_SPACE_API,
       new URLSearchParams({
-        apikey: process.env.OCR_SPACE_API_KEY, // stored in Render env
+        apikey: process.env.OCR_SPACE_API, // stored in Render env
         base64Image: `data:image/png;base64,${imageBase64}`,
         language: "eng"
       }),
