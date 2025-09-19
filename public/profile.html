@@ -280,6 +280,13 @@
         // Remove any old cards before adding new
         document.querySelectorAll(".card").forEach(el => el.remove());
 
+        //testing remove this
+        const severityMap = {
+          Mild: "green",
+          Moderate: "orange",
+          Severe: "red"
+        };
+
         // Loop through allergies map and create cards
         Object.entries(allergies).forEach(([allergen, severity]) => {
           const card = `
@@ -300,7 +307,6 @@
         console.error("Error loading allergies:", err);
       }
     }
-
     // Load on page load
     loadAllergies();
   </script>
