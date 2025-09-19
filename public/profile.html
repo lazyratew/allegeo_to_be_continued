@@ -87,7 +87,7 @@
       padding-bottom: 0.2rem;
     }
 
-    .tabs .active { 
+    .tabs .active {
       border-bottom: 2px solid var(--burgundy);
       font-weight: bold;
     }
@@ -269,6 +269,29 @@
     const userEmail = localStorage.getItem('userEmail') || "test@example.com";
     const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com"
 
+    const allergenIcons = {
+      "Milk": "https://img.icons8.com/color/48/milk-bottle.png",
+      "Egg": "https://cdn.britannica.com/94/151894-050-F72A5317/Brown-eggs.jpg",
+      "Peanuts": "https://img.icons8.com/emoji/48/peanuts-emoji.png",
+      "Tree Nuts": "https://img.icons8.com/emoji/48/chestnut.png",
+      "Sesame": "https://img.icons8.com/color/48/sesame.png",
+      "Soy": "https://hips.hearstapps.com/hmg-prod/images/soybean-royalty-free-image-1591121334.jpg",
+      "Fish": "https://img.icons8.com/color/48/fish-food.png",
+      "Shellfish": "https://womenshealth.obgyn.msu.edu/sites/womenshealth/files/Shellfish-and-Crustaceans-Cookery-Course_0.jpg",
+      "Gluten": "https://img.icons8.com/color/48/wheat.png",
+      "Mustard": "https://img.icons8.com/color/48/mustard.png",
+      "Corn": "https://img.icons8.com/color/48/corn.png",
+      "Strawberries": "https://img.icons8.com/color/48/strawberry.png",
+      "Salmon": "https://img.icons8.com/color/48/salmon.png",
+      "Peach": "https://img.icons8.com/emoji/48/peach-emoji.png",
+      "Lupin": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Lupinus_albus.JPG",
+      "Celery": "https://www.innerwest.nsw.gov.au/Images/UserUploadedImages/33161/celery-cropped.jpg",
+      "Tomatoes": "https://img.icons8.com/color/48/tomato.png",
+      "Banana": "https://img.icons8.com/emoji/48/banana-emoji.png",
+      "Garlic": "https://img.icons8.com/color/48/garlic.png"
+    };
+
+
     async function loadAllergies() {
       try {
         const res = await fetch(`${BACKEND_URL}/api/user/profile?email=${encodeURIComponent(userEmail)}`);
@@ -287,19 +310,20 @@
         };
 
         Object.entries(allergies).forEach(([allergen, severity]) => {
-          const dotClass = severityMap[severity] || "green"; // default green
-          const card = `
-    <div class="card">
-      <div class="card-header">
-        <h2>${allergen}</h2>
-        <span class="text-sm">${new Date().toLocaleDateString()}</span>
-      </div>
-      <div class="severity">
-        <div class="dot ${dotClass}"></div>
-        <span>Severity: ${severity}</span>
-      </div>
-    </div>
-  `;
+          const dotClass = severityMap[severity] || "grey";
+          const iconUrl = allergenIcons[allergen] || "loading.gif";
+
+          const card = `<div class="card" style="display:flex; justify-content: space-between; align-items:center;">
+            <div>
+              <h2>${allergen}</h2>
+              <div class="severity" style="display:flex; align-items:center; gap:0.5rem;">
+                <div class="dot ${dotClass}"></div>
+                <span>Severity: ${severity}</span>
+                </div>
+                </div>
+                <img src="${iconUrl}" alt="${allergen}" style="width:50px; height:50px; object-fit:contain; border-radius:0.5rem;">
+                </div>
+                `;
           document.querySelector(".add-allergy-btn").insertAdjacentHTML("afterend", card);
         });
       } catch (err) {
