@@ -13,6 +13,12 @@
       --gold: #d4af37;
     }
 
+    .logo {
+      height: 40px;
+      width: auto;
+      display: block;
+    }
+
     body {
       font-family: 'Poppins', sans-serif;
       background-color: var(--white);
@@ -40,7 +46,7 @@
     }
 
     .nav-icon {
-      font-size: 1.4rem; 
+      font-size: 1.4rem;
       color: var(--burgundy);
       background: none;
       border: none;
@@ -197,8 +203,10 @@
 
   <!-- Navigation -->
   <nav>
-    <div class="nav-title">Allegeo</div>
-    <a href=login.html class="nav-icon">Logout</a>
+    <div class="nav-title">
+      <img src="shiny.png" alt="Allegeo Logo" class="logo">
+    </div>
+    <a href="login.html" class="nav-icon">Logout</a>
   </nav>
 
   <!-- Main Content -->
@@ -215,33 +223,21 @@
     <!-- Add Allergy -->
     <a href="dashboard.html" class="add-allergy-btn">+ Add New Allergy</a>
 
-    <!--  Sample of what the Allergy Cards look like-->
-    <!-- <div class="card">
-      <div class="card-header">
-        <h2>Peanuts</h2>
-        <span class="text-sm">Added 3 weeks ago</span>
-      </div>
-      <div class="severity">
-        <div class="dot red"></div>
-        <span>Severity: High</span>
-      </div>
-    </div> -->
+    <!-- Scan Button -->
+    <a href="scan_page.html" class="scan-btn">📷</a>
 
-
-  <!-- Scan Button -->
-  <a href="scan_page.html" class="scan-btn">📷</a>
-
-  <!-- Bottom Navigation -->
-  <footer>
-    <a href="#" class="active">🏠</a>
-    <a href="scan_page.html">📷</a>
-    <a href="#">⚙️</a>
-  </footer>
+    <!-- Bottom Navigation -->
+    <footer>
+      <a href="#" class="active">🏠</a>
+      <a href="scan_page.html">📷</a>
+      <a href="#">⚙️</a>
+    </footer>
+  </div>
 
   <script>
     // TODO: Replace with real email from login/session
     const userEmail = localStorage.getItem('userEmail') || "test@example.com";
-    const BACKEND_URL="https://allegeo-to-be-continued.onrender.com"
+    const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com"
 
     async function loadAllergies() {
       try {

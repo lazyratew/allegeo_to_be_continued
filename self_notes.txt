@@ -1,2 +1,4 @@
-keep testing scan_page until the OCR works normally
 - add compare page 
+- add logo
+- add main logic, take detected text compare it against the allergens on the user's profile. Show the user their allergy results.
+- make a new page to show the DETECTED allergies.
