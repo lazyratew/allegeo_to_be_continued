@@ -147,7 +147,7 @@
     }
 
     .dot.orange {
-      background-color: orange;
+      background-color: rgb(238, 158, 10);
     }
 
     .dot.green {
@@ -289,18 +289,19 @@
 
         // Loop through allergies map and create cards
         Object.entries(allergies).forEach(([allergen, severity]) => {
+          const dotClass = severityMap[severity] || "green"; // default green
           const card = `
-          <div class="card">
-            <div class="card-header">
-              <h2>${allergen}</h2>
-              <span class="text-sm">${new Date().toLocaleDateString()}</span>
-            </div>
-            <div class="severity">
-              <div class="dot ${severity.toLowerCase()}"></div>
-              <span>Severity: ${severity}</span>
-            </div>
-          </div>
-        `;
+    <div class="card">
+      <div class="card-header">
+        <h2>${allergen}</h2>
+        <span class="text-sm">${new Date().toLocaleDateString()}</span>
+      </div>
+      <div class="severity">
+        <div class="dot ${dotClass}"></div>
+        <span>Severity: ${severity}</span>
+      </div>
+    </div>
+  `;
           document.querySelector(".add-allergy-btn").insertAdjacentHTML("afterend", card);
         });
       } catch (err) {
