@@ -14,7 +14,7 @@
     }
 
     .allegeo-logo {
-      height: 90px;  
+      height: 85px;
       width: auto;
       display: block;
     }
@@ -174,26 +174,41 @@
       color: var(--burgundy);
     }
 
-    /* Bottom Nav */
-    footer {
-      background-color: var(--white);
-      padding: 0.7rem 1rem;
-      display: flex;
-      justify-content: space-around;
+    /* Bottom Navigation Bar */
+    .bottom-nav {
       position: fixed;
       bottom: 0;
+      left: 0;
       width: 100%;
-      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      background: #fff;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid #ddd;
+      padding: 8px 0;
+      z-index: 1000;
     }
 
-    footer a {
-      font-size: 1.5rem;
+    .bottom-nav .nav-item {
+      flex: 1;
+      text-align: center;
+      color: #555;
       text-decoration: none;
-      color: var(--burgundy);
+      font-size: 14px;
+      padding: 6px;
+      border-radius: 12px;
+      transition: all 0.2s ease-in-out;
     }
 
-    footer a.active {
-      color: var(--gold);
+    .bottom-nav .nav-item .icon {
+      display: block;
+      font-size: 20px;
+    }
+
+    .bottom-nav .nav-item.active,
+    .bottom-nav .nav-item:hover {
+      background: rgba(233, 30, 99, 0.1);
+      /* light pink highlight */
+      color: #e91e63;
     }
   </style>
 </head>
@@ -227,12 +242,26 @@
     <!-- Scan Button -->
     <a href="scan_page.html" class="scan-btn">📷</a>
 
-    <!-- Bottom Navigation -->
-    <footer>
-      <a href="#" class="active">🏠</a>
-      <a href="scan_page.html">📷</a>
-      <a href="#">⚙️</a>
-    </footer>
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+      <a href="dashboard.html" class="nav-item active">
+        <span class="icon">🏠</span>
+        <span class="text">Dashboard</span>
+      </a>
+      <a href="compare.html" class="nav-item">
+        <span class="icon">🔍</span>
+        <span class="text">Search</span>
+      </a>
+      <a href="results.html" class="nav-item">
+        <span class="icon">📊</span>
+        <span class="text">Results</span>
+      </a>
+      <a href="feedback.html" class="nav-item">
+        <span class="icon">💬</span>
+        <span class="text">Feedback</span>
+      </a>
+    </div>
+
   </div>
 
   <script>
