@@ -13,8 +13,14 @@
       --gold: #d4af37;
     }
 
-    .logo {
+    .allegeo-logo {
       height: 70px;
+      width: auto;
+      display: block;
+    }
+
+    .logout-logo {
+      height: 50px;
       width: auto;
       display: block;
     }
@@ -36,6 +42,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      height: 90px;
     }
 
 
@@ -195,10 +202,12 @@
   <!-- Navigation -->
   <nav>
     <div class="nav-title">
-      <img src="images/allegeo_shiny.png" alt="Allegeo Logo" class="logo">
+      <img src="images/allegeo_shiny.png" alt="Allegeo Logo" class="allegeo-logo">
       <img src="images/logout_shiny.png" alt="Logout" href="login.html" class="nav-icon"> <!--self_made code -->
     </div>
-    <!--<a href="login.html" class="nav-icon">Logout</a> -->
+    <a href="login.html" class="nav-icon">
+      <img src="images/logout_shiny.png" alt="Logout" class="logout-logo">
+    </a>
   </nav>
 
   <!-- Main Content -->
