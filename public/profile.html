@@ -87,8 +87,8 @@
       padding-bottom: 0.2rem;
     }
 
-    .tabs .active {
-      border-bottom: 2px solid var(--burgundy);
+    .tabs .active { /* TESTING*/
+      border-bottom: 10px solid var(--burgundy);
       font-weight: bold;
     }
 
@@ -277,17 +277,15 @@
         const data = await res.json();
         const allergies = data.allergies || {};
 
-        // Remove any old cards before adding new
+        // to Remove any old cards before adding new
         document.querySelectorAll(".card").forEach(el => el.remove());
 
-        //testing remove this
         const severityMap = {
           Mild: "green",
           Moderate: "orange",
           Severe: "red"
         };
 
-        // Loop through allergies map and create cards
         Object.entries(allergies).forEach(([allergen, severity]) => {
           const dotClass = severityMap[severity] || "green"; // default green
           const card = `
