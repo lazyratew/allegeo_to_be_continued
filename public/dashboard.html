@@ -26,6 +26,19 @@
       min-height: 100vh;
     }
 
+    /* Top Navigation Bar (same as profile.html) */
+    .allegeo-logo {
+      height: 85px;
+      width: auto;
+      display: block;
+    }
+
+    .logout-logo {
+      height: 50px;
+      width: auto;
+      display: block;
+    }
+
     nav {
       background-color: var(--gold);
       height: 60px;
@@ -33,67 +46,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      /* subtle shadow under nav */
+      overflow: hidden;
     }
 
-    .allegeo-logo {
-      height: 45px;
-      /* logo sizing */
-      width: auto;
-    }
-
-    .logout-logo {
-      height: 30px;
-      /* logout icon sizing */
-      width: auto;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-
-    .logout-logo:hover {
-      transform: scale(1.1);
-    }
-    
     .nav-icon {
       font-size: 1.4rem;
       cursor: pointer;
-    }
-
-    .nav-title {
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: var(--burgundy);
-    }
-
-    .nav-actions {
-      display: flex;
-      gap: 1.5rem;
-      align-items: center;
-    }
-
-    .nav-actions a,
-    .nav-actions button {
-      font-family: 'Poppins', sans-serif;
-      font-size: 1rem;
-      text-decoration: none;
-      color: var(--burgundy);
-      background: none;
-      border: none;
-      cursor: pointer;
-      transition: color 0.2s ease;
-    }
-
-    .nav-actions a:hover,
-    .nav-actions button:hover {
-      color: var(--white);
-    }
-
-    .nav-underline {
-      height: 70px;
-      background-color: var(--burgundy);
-      width: 100%;
     }
 
     .feedback-button-container {
