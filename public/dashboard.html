@@ -28,14 +28,18 @@
 
     nav {
       background-color: var(--gold);
-      padding: 1rem 1.5rem;
+      height: 60px;
+      padding: 0 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 10;
+      overflow: hidden;
+    }
+
+
+    .nav-icon {
+      font-size: 1.4rem;
+      cursor: pointer;
     }
 
     .nav-title {
@@ -260,7 +264,7 @@
       <img src="images/logout_shiny.png" alt="Logout" class="logout-logo">
     </a>
   </nav>
-  
+
   <div class="nav-underline"></div>
   <div class="feedback-button-container">
     <button onclick="window.location.href='feedback.html'" class="feedback-btn">
