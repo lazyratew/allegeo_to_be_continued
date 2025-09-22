@@ -1,9 +1,21 @@
+//to create a collection for feedback
 const mongoose = require('mongoose');
 
-const FeedbackSchema = new mongoose.Schema({
-  email:    { type: String },
-  message:  { type: String, required: true },
-  createdAt: { type: Date, default: Date.now, expires: '7d' } // Auto-delete after 7 days
-});
+const FeedbackSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      required: false, //anonymous feedback
+      lowercase: true,
+      trim: true
+    },
+    message: {
+      type: String,
+      required: true,
+      trim: true
+    }
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model('feedback', FeedbackSchema);
+module.exports = mongoose.model('Feedback', FeedbackSchema);

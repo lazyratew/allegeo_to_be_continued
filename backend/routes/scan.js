@@ -1,4 +1,3 @@
-//the api being used is OCR.SPACE api, NOT google cloud vision
 const express = require('express');
 const router = express.Router();
 const Scan = require('../models/scan');
