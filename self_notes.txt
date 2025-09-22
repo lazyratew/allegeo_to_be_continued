@@ -5,3 +5,11 @@
 - make a new page to show the DETECTED allergies. (results.html) [make good color coded results based on seriousness], 
 - work on the compare page (add a database, retrieve data from it)
 - add better images (make new links on dashboard.html, profile.html)
+- REDESIGN THE ENTIRE DATABASE
+- create help page. 
+- add scan shortcut from dashboard
+
+pages to create:
+-help page
+-compare page
+-results page
