@@ -202,7 +202,7 @@
       }
 
       //shows all products with compare option 
-      products.forEach(product => {
+      products.forEach((product) => {
         let ingredientsHtml = "";
         product.ingredients.forEach(ing => {
           ingredientsHtml += `<div class="ingredient">${ing}</div>`;
@@ -210,7 +210,7 @@
 
         const card = `
           <div class="card">
-            <input type="radio" name="productSelect" value="${idx}" onchange='setSelectedProduct(${JSON.stringify(product)})'>
+            <input type="radio" name="productSelect" onchange='setSelectedProduct(${JSON.stringify(product)})'>
             <h2>${product.name} (${product.brand})</h2>
             <h3>Ingredients:</h3>
             ${ingredientsHtml}
