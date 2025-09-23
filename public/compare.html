@@ -103,6 +103,13 @@
       margin-bottom: 1rem;
     }
 
+    .card.selected {
+      border: 3px solid var(--burgundy);
+      background-color: #fff5f7;
+      box-shadow: 0 0 10px rgba(94, 8, 24, 0.4);
+    }
+
+
     .ingredient {
       display: flex;
       align-items: center;
@@ -171,24 +178,12 @@
     const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com"
     const userEmail = localStorage.getItem("userEmail") || "test@example.com";
     let userAllergies = {};
+    let selectedProduct = null;
 
     async function loadUserAllergies() {
       const res = await fetch(`${BACKEND_URL}/userinfo/profile?email=${encodeURIComponent(userEmail)}`);
       const data = await res.json();
       userAllergies = data.allergies || {};
-    }
-
-    // Returns true if more than 90% of the characters are English letters or numbers
-    function isMostlyEnglish(text) {
-      const chars = text.replace(/\s+/g, '');
-      if (!chars) return false;
-      const englishChars = chars.match(/[a-zA-Z0-9]/g) || [];
-      const ratio = englishChars.length / chars.length;
-      return ratio > 0.9; // threshold can be adjusted
-    }
-
-    function getEnglishProduct(products) {
-      return products.find(p => isMostlyEnglish(p.ingredients.join(" ")));
     }
 
     async function searchProduct() {
@@ -198,27 +193,24 @@
       const res = await fetch(`${BACKEND_URL}/products/search?q=${encodeURIComponent(query)}&email=${encodeURIComponent(userEmail)}`);
       const products = await res.json();
 
-      const englishProduct = getEnglishProduct(products);
       const resultsDiv = document.getElementById("results");
       resultsDiv.innerHTML = "";
 
-      if (!englishProduct) {
+      if (!products.length) {
         resultsDiv.innerHTML = "<p>No English product found.</p>";
         return;
       }
 
-      /* //Old compare with user allergies logic 
+      //shows all products with compare option 
       products.forEach(product => {
         let ingredientsHtml = "";
         product.ingredients.forEach(ing => {
-          const isAllergen = Object.keys(userAllergies).some(
-            allergy => ing.toLowerCase().includes(allergy.toLowerCase())
-          );
-          ingredientsHtml += `<div class="ingredient ${isAllergen ? 'flagged' : ''}">${ing}${isAllergen ? ' ⚠️' : ''}</div>`;
+          ingredientsHtml += `<div class="ingredient">${ing}</div>`;
         });
 
         const card = `
           <div class="card">
+            <input type="radio" name="productSelect" value="${idx}" onchange='setSelectedProduct(${JSON.stringify(product)})'>
             <h2>${product.name} (${product.brand})</h2>
             <h3>Ingredients:</h3>
             ${ingredientsHtml}
@@ -226,10 +218,28 @@
         `;
         resultsDiv.insertAdjacentHTML("beforeend", card);
       });
-    } */
+      // Add confirm button after all results
+      resultsDiv.insertAdjacentHTML("beforeend", `
+      <button onclick="confirmSelection()" style="margin-top:1rem; padding:0.8rem; background:var(--burgundy); color:white; border:none; border-radius:0.5rem; cursor:pointer;">
+        ✅ Confirm Selection
+      </button>
+    `);
+    }
 
-      // Compare ingredients with user allergies
-      const flaggedIngredients = englishProduct.ingredients.map(ing => {
+
+    function setSelectedProduct(product) {
+      selectedProduct = product;
+    }
+
+    async function confirmSelection() {
+      if (!selectedProduct) {
+        alert("Please select a product first.");
+        return;
+      }
+
+      // Compare against allergies
+      const resultsDiv = document.getElementById("results");
+      const flaggedIngredients = selectedProduct.ingredients.map(ing => {
         const isAllergen = Object.keys(userAllergies).some(allergy =>
           ing.toLowerCase().includes(allergy.toLowerCase())
         );
@@ -239,23 +249,27 @@
       let ingredientsHtml = "";
       flaggedIngredients.forEach(ing => {
         ingredientsHtml += `<div class="ingredient ${ing.isAllergen ? 'flagged' : ''}">
-                              ${ing.name}${ing.isAllergen ? ' ⚠️' : ''}
-                            </div>`;
+                            ${ing.name}${ing.isAllergen ? ' ⚠️' : ''}
+                          </div>`;
       });
 
       const card = `
-        <div class="card">
-          <h2>${englishProduct.name} (${englishProduct.brand})</h2>
-          <h3>Ingredients:</h3>
-          ${ingredientsHtml}
-        </div>
-      `;
-
+      <div class="card selected">
+        <h2>${selectedProduct.name} (${selectedProduct.brand})</h2>
+        <h3>Ingredients:</h3>
+        ${ingredientsHtml}
+      </div>
+    `;
       resultsDiv.innerHTML = card;
+
+      // Save only the confirmed product to DB
+      await fetch(`${BACKEND_URL}/products/storeSelected`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: userEmail, product: selectedProduct }),
+      });
     }
 
-
-    // Load allergies on page load
     loadUserAllergies();
   </script>
 </body>
