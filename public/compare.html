@@ -162,7 +162,7 @@
       const query = document.getElementById("searchInput").value;
       if (!query) return;
 
-      const res = await fetch(`/products/search?q=${encodeURIComponent(query)}`); // edit fetch with render backend as well
+      const res = await fetch(`/products/search?q=${encodeURIComponent(query)}&email=${encodeURIComponent(userEmail)}`);  // edit fetch with render backend as well
       const products = await res.json(); 
 
       const resultsDiv = document.getElementById("results");
