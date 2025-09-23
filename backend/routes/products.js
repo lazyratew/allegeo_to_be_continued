@@ -1,9 +1,8 @@
 // routes/products.js
 const express = require('express');
 const router = express.Router();
-const fetch = require("node-fetch");
+const fetch = global.fetch;
 const SearchHistory = require("../models/searchhistory");
-
 
 // Search products from OpenFoodFacts
 router.get('/search', async (req, res) => {
