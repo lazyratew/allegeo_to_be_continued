@@ -4,20 +4,28 @@ const router = express.Router();
 const fetch = global.fetch;
 const SearchHistory = require("../models/searchhistory");
 
-// Checks if a text is mostly English (70% or more ASCII letters/numbers)
-function isMostlyEnglish(text) {
-  const chars = text.replace(/\s+/g, '');
-  if (!chars) return false;
-  const englishChars = chars.match(/[a-zA-Z0-9]/g) || [];
-  const ratio = englishChars.length / chars.length;
-  return ratio > 0.9;
+function englishScore(text) {
+  const words = text.split(/\s+/).filter(Boolean);
+  if (!words.length) return 0;
+  let englishWords = 0;
+  words.forEach(w => {
+    if (/^[a-zA-Z0-9]+$/.test(w)) englishWords++; // counts English/alphanumeric words
+  });
+  return englishWords / words.length; // ratio 0–1
 }
 
-// Pick the first product that is mostly English
 function getEnglishProduct(products) {
-  return products.find(p => isMostlyEnglish(p.ingredients.join(" ")));
+  let bestProduct = null;
+  let bestScore = 0;
+  products.forEach(p => {
+    const score = englishScore(p.ingredients.join(" "));
+    if (score > bestScore) {
+      bestScore = score;
+      bestProduct = p;
+    }
+  });
+  return bestProduct;
 }
-
 
 // Search products from OpenFoodFacts
 router.get('/search', async (req, res) => {
