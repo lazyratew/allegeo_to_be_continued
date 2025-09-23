@@ -10,7 +10,7 @@ function isMostlyEnglish(text) {
   if (!chars) return false;
   const englishChars = chars.match(/[a-zA-Z0-9]/g) || [];
   const ratio = englishChars.length / chars.length;
-  return ratio > 0.7;
+  return ratio > 0.9;
 }
 
 // Pick the first product that is mostly English
