@@ -4,21 +4,30 @@ const router = express.Router();
 const fetch = global.fetch;
 const SearchHistory = require("../models/searchhistory");
 
-function englishScore(text) {
-  const words = text.split(/\s+/).filter(Boolean);
+const commonEnglishWords = new Set([
+  "sugar","salt","oil","milk","butter","cocoa","flour","water","tomatoes",
+  "chocolate","honey","egg","lupin","yeast","corn","celery","almond","soy",
+  "peach","lemon","orange","apple","banana", "strawberries","strawberry", "rice","wheat","peanuts","hazelnut",
+  "cocoa","powder","emulsifier", "sesame", "tree nuts", "soy", "fish", "shellfish", "gluten", "mustard", 
+]);
+
+function englishWordRatio(text) {
+  const words = text
+    .toLowerCase()
+    .replace(/[^a-zA-Z\s]/g, ' ') // remove punctuation & accents
+    .split(/\s+/)
+    .filter(Boolean);
+
   if (!words.length) return 0;
-  let englishWords = 0;
-  words.forEach(w => {
-    if (/^[a-zA-Z0-9]+$/.test(w)) englishWords++; // counts English/alphanumeric words
-  });
-  return englishWords / words.length; // ratio 0–1
+  const englishCount = words.filter(w => commonEnglishWords.has(w)).length;
+  return englishCount / words.length;
 }
 
 function getEnglishProduct(products) {
   let bestProduct = null;
   let bestScore = 0;
   products.forEach(p => {
-    const score = englishScore(p.ingredients.join(" "));
+    const score = englishWordRatio(p.ingredients.join(" "));
     if (score > bestScore) {
       bestScore = score;
       bestProduct = p;
