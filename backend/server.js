@@ -9,6 +9,7 @@ const cors = require('cors');
 const authRouter = require('./routes/auth');  //file created for user credentials
 const userinfoRouter = require('./routes/userinfo'); //file created for user information
 const scanRouter = require('./routes/scan'); //for the scan_page.html file
+const productRoutes = require('./routes/products');
 
 // Initialize Express app
 const app = express();
@@ -24,6 +25,7 @@ app.use(express.json()); // for parsing application/json
 app.use('/api/auth', authRouter);
 app.use('/api/user', userinfoRouter);
 app.use('/api/scan', scanRouter);
+app.use('/products', productRoutes);
 
 // Debug: verify environment variable is loaded
 console.log('MONGO_URI →', process.env.MONGO_URI);
