@@ -181,7 +181,7 @@
     let selectedProduct = null;
 
     async function loadUserAllergies() {
-      const res = await fetch(`${BACKEND_URL}/userinfo/profile?email=${encodeURIComponent(userEmail)}`);
+      const res = await fetch(`${BACKEND_URL}/api/user/profile?email=${encodeURIComponent(userEmail)}`);
       const data = await res.json();
       userAllergies = data.allergies || {};
     }
