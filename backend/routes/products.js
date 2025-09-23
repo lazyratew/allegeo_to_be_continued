@@ -4,15 +4,30 @@ const router = express.Router();
 const fetch = global.fetch;
 const SearchHistory = require("../models/searchhistory");
 
+// Checks if a text is mostly English (70% or more ASCII letters/numbers)
+function isMostlyEnglish(text) {
+  const chars = text.replace(/\s+/g, '');
+  if (!chars) return false;
+  const englishChars = chars.match(/[a-zA-Z0-9]/g) || [];
+  const ratio = englishChars.length / chars.length;
+  return ratio > 0.7;
+}
+
+// Pick the first product that is mostly English
+function getEnglishProduct(products) {
+  return products.find(p => isMostlyEnglish(p.ingredients.join(" ")));
+}
+
+
 // Search products from OpenFoodFacts
 router.get('/search', async (req, res) => {
-    try {
-        const query = req.query.q;
-        const email = req.query.email;
-        if (!query) return res.status(400).json({ error: "Query required" });
-        if (!email) return res.status(400).json({ error: "Email required" });
+  try {
+    const query = req.query.q;
+    const email = req.query.email;
+    if (!query) return res.status(400).json({ error: "Query required" });
+    if (!email) return res.status(400).json({ error: "Email required" });
 
-         // 1. Check cache per-user
+    // 1. Check cache per-user
     const cached = await SearchHistory.findOne({
       email,
       query: query.toLowerCase(),
@@ -43,14 +58,27 @@ router.get('/search', async (req, res) => {
     }));
 
     // 3. Save results for this user (7d TTL auto-applies)
-    await SearchHistory.create({
-      email,
-      query: query.toLowerCase(),
-      results: products,
-    });
+    const englishProduct = getEnglishProduct(products);
+
+    if (englishProduct) {
+      await SearchHistory.create({
+        email,
+        query: query.toLowerCase(),
+        results: [englishProduct], // store only this one
+      });
+      console.log("🌍 Stored only the English product for", email);
+    } else {
+      console.log("⚠️ No English product found for", email);
+    }
+
 
     console.log("🌍 Served from OpenFoodFacts API for", email);
-    res.json(products);
+    if (englishProduct) {
+      res.json([englishProduct]); // only send the English product
+    } else {
+      res.json([]); // no English product found
+    }
+
   } catch (err) {
     console.error("❌ Error in /products/search:", err.message);
     res.status(500).json({ error: "Internal server error" });

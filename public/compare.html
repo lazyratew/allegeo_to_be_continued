@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,6 +12,7 @@
       --white: #ffffff;
       --gold: #d4af37;
     }
+
     body {
       font-family: 'Poppins', sans-serif;
       background-color: var(--white);
@@ -21,6 +23,7 @@
       display: flex;
       flex-direction: column;
     }
+
     nav {
       background-color: var(--gold);
       padding: 1rem 1.5rem;
@@ -28,24 +31,28 @@
       justify-content: space-between;
       align-items: center;
     }
+
     .nav-title {
       font-family: 'Dancing Script', cursive;
       font-size: 1.8rem;
       font-weight: 600;
       color: var(--burgundy);
     }
+
     .main {
       flex: 1;
       max-width: 700px;
       margin: 2rem auto 6rem;
       padding: 1rem;
     }
+
     h1 {
       font-size: 1.5rem;
       font-weight: bold;
       margin-bottom: 1rem;
       text-align: center;
     }
+
     .tabs {
       display: flex;
       justify-content: center;
@@ -54,19 +61,23 @@
       margin-bottom: 1.5rem;
       padding-bottom: 0.5rem;
     }
+
     .tabs a {
       text-decoration: none;
       color: var(--burgundy);
       font-weight: 500;
     }
+
     .tabs .active {
       border-bottom: 2px solid var(--burgundy);
       font-weight: bold;
     }
+
     .search-bar {
       display: flex;
       margin-bottom: 1.5rem;
     }
+
     .search-bar input {
       flex: 1;
       padding: 0.8rem;
@@ -74,6 +85,7 @@
       border-radius: 0.75rem 0 0 0.75rem;
       outline: none;
     }
+
     .search-bar button {
       padding: 0.8rem 1rem;
       border: none;
@@ -82,6 +94,7 @@
       border-radius: 0 0.75rem 0.75rem 0;
       cursor: pointer;
     }
+
     .card {
       background-color: var(--white);
       border: 2px solid var(--gold);
@@ -89,15 +102,18 @@
       padding: 1rem;
       margin-bottom: 1rem;
     }
+
     .ingredient {
       display: flex;
       align-items: center;
       margin: 0.3rem 0;
     }
+
     .ingredient.flagged {
       color: red;
       font-weight: bold;
     }
+
     footer {
       background-color: var(--white);
       padding: 0.7rem 1rem;
@@ -108,16 +124,19 @@
       width: 100%;
       box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
     }
+
     footer a {
       font-size: 1.5rem;
       text-decoration: none;
       color: var(--burgundy);
     }
+
     footer a.active {
       color: var(--gold);
     }
   </style>
 </head>
+
 <body>
   <nav>
     <div class="nav-title">Allegeo</div>
@@ -154,21 +173,41 @@
     let userAllergies = {};
 
     async function loadUserAllergies() {
-      const res = await fetch(`${BACKEND_URL}/userinfo/profile?email=${encodeURIComponent(userEmail)}`); //edit fetch with render backend
+      const res = await fetch(`${BACKEND_URL}/userinfo/profile?email=${encodeURIComponent(userEmail)}`);
       const data = await res.json();
       userAllergies = data.allergies || {};
+    }
+
+    // Returns true if more than 90% of the characters are English letters or numbers
+    function isMostlyEnglish(text) {
+      const chars = text.replace(/\s+/g, '');
+      if (!chars) return false;
+      const englishChars = chars.match(/[a-zA-Z0-9]/g) || [];
+      const ratio = englishChars.length / chars.length;
+      return ratio > 0.9; // threshold can be adjusted
+    }
+
+    function getEnglishProduct(products) {
+      return products.find(p => isMostlyEnglish(p.ingredients.join(" ")));
     }
 
     async function searchProduct() {
       const query = document.getElementById("searchInput").value;
       if (!query) return;
 
-      const res = await fetch(`${BACKEND_URL}/products/search?q=${encodeURIComponent(query)}&email=${encodeURIComponent(userEmail)}`);  // edit fetch with render backend as well
-      const products = await res.json(); 
+      const res = await fetch(`${BACKEND_URL}/products/search?q=${encodeURIComponent(query)}&email=${encodeURIComponent(userEmail)}`);
+      const products = await res.json();
 
+      const englishProduct = getEnglishProduct(products);
       const resultsDiv = document.getElementById("results");
       resultsDiv.innerHTML = "";
 
+      if (!englishProduct) {
+        resultsDiv.innerHTML = "<p>No English product found.</p>";
+        return;
+      }
+
+      /* //Old compare with user allergies logic 
       products.forEach(product => {
         let ingredientsHtml = "";
         product.ingredients.forEach(ing => {
@@ -187,10 +226,38 @@
         `;
         resultsDiv.insertAdjacentHTML("beforeend", card);
       });
+    } */
+
+      // Compare ingredients with user allergies
+      const flaggedIngredients = englishProduct.ingredients.map(ing => {
+        const isAllergen = Object.keys(userAllergies).some(allergy =>
+          ing.toLowerCase().includes(allergy.toLowerCase())
+        );
+        return { name: ing, isAllergen };
+      });
+
+      let ingredientsHtml = "";
+      flaggedIngredients.forEach(ing => {
+        ingredientsHtml += `<div class="ingredient ${ing.isAllergen ? 'flagged' : ''}">
+                              ${ing.name}${ing.isAllergen ? ' ⚠️' : ''}
+                            </div>`;
+      });
+
+      const card = `
+        <div class="card">
+          <h2>${englishProduct.name} (${englishProduct.brand})</h2>
+          <h3>Ingredients:</h3>
+          ${ingredientsHtml}
+        </div>
+      `;
+
+      resultsDiv.innerHTML = card;
     }
+
 
     // Load allergies on page load
     loadUserAllergies();
   </script>
 </body>
+
 </html>

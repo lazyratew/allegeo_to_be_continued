@@ -20,7 +20,7 @@ const searchHistorySchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: "7d", // optional TTL: auto-delete after 30 days
+    expires: "4d", // optional TTL: auto-delete after 4 days
   },
 });
 
