@@ -1,4 +1,3 @@
-//this collection is for login, signup user data & for allergies
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema(

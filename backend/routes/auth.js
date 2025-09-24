@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user'); // your mongoose model
 
+//signup
 router.post('/signup', async (req, res) => {
   try {
     const { username, email, phone, password } = req.body;
@@ -20,6 +21,7 @@ router.post('/signup', async (req, res) => {
   }
 });
 
+//login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -36,6 +38,9 @@ router.post('/login', async (req, res) => {
     if (user.password !== password) {
       return res.status(401).json({ error: 'Incorrect password' });
     }
+    //store session
+    req.session.userId = user._id;
+    req.session.email = user.email;
 
     console.log('✅ Login successful:', user.email);
     return res.status(200).json({ message: 'Login successful', email: user.email });
@@ -43,5 +48,17 @@ router.post('/login', async (req, res) => {
     console.error('❌ Login error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
+});
+
+//Logout
+router.post('/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Could not log out' });
+    }
+    res.clearCookie('connect.sid'); // default cookie name
+    res.json({ message: 'Logged out' });
+  });
 });
 module.exports = router;
