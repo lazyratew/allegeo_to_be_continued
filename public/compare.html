@@ -208,6 +208,8 @@
     const userEmail = localStorage.getItem("userEmail") || "test@example.com";
     let userAllergies = {};
     let selectedProduct = null;
+    let searchResults = [];
+    let resultsDiv;
 
     async function loadUserAllergies() {
       const res = await fetch(`${BACKEND_URL}/api/user/profile?email=${encodeURIComponent(userEmail)}`);
@@ -215,15 +217,14 @@
       userAllergies = data.allergies || {};
     }
 
-    let searchResults = [];
-    async function searchProduct() {
+    async function searchProduct() { //need to add try-catch incase of a fetch err
       const query = document.getElementById("searchInput").value;
       if (!query) return;
 
       const res = await fetch(`${BACKEND_URL}/products/search?q=${encodeURIComponent(query)}&email=${encodeURIComponent(userEmail)}`);
       const products = await res.json();
 
-      const resultsDiv = document.getElementById("results");
+      const resultsDiv = document.getElementById("results"); 
       resultsDiv.innerHTML = ""; 
       
       if (!products.length) {
@@ -272,6 +273,8 @@
 
       // Use backend-detected allergens
       let ingredientsHtml = "";
+      const flaggedAllergens = selectedProduct.flaggedAllergens || []; //fallsback to empty array
+
       selectedProduct.ingredients.forEach(ing => {
         const matched = selectedProduct.flaggedAllergens.find(f =>
           ing.toLowerCase().includes(f.allergen.toLowerCase())
