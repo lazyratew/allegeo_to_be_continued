@@ -312,17 +312,7 @@
       </div>
     </div>
   `;
-  resultsDiv.innerHTML = card;
-      //resultsDiv.insertAdjacentHTML("beforeend", card); //uncomment this
-
-      /*const card = `
-      <div class="card selected">
-        <h2>${selectedProduct.name} (${selectedProduct.brand})</h2>
-        <h3>Ingredients:</h3>
-        ${ingredientsHtml}
-      </div>
-    `;
-      resultsDiv.innerHTML = card; */ //trying to fix the UI
+      resultsDiv.innerHTML = card;
 
       // Save only the confirmed product to DB
       await fetch(`${BACKEND_URL}/products/storeSelected`, {
