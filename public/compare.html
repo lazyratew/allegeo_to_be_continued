@@ -209,7 +209,7 @@
     let userAllergies = {};
     let selectedProduct = null;
     let searchResults = [];
-    let resultsDiv;
+    let resultsDiv = null;
 
     const storedEmail = localStorage.getItem("userEmail");
     if (!storedEmail) {
@@ -232,8 +232,8 @@
       const res = await fetch(`${BACKEND_URL}/products/search?q=${encodeURIComponent(query)}&email=${encodeURIComponent(userEmail)}`);
       const products = await res.json();
 
-      const resultsDiv = document.getElementById("results");
-      resultsDiv.innerHTML = "";
+      resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = "<p> Loading...</p>";
 
       if (!products.length) {
         resultsDiv.innerHTML = "<p>No English product found.</p>";
