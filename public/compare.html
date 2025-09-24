@@ -233,7 +233,7 @@
       const products = await res.json();
 
       resultsDiv = document.getElementById("results");
-      resultsDiv.innerHTML = "<p> Loading...</p>";
+      resultsDiv.innerHTML = "<h2>Select the product you were looking for...</h2>";
 
       if (!products.length) {
         resultsDiv.innerHTML = "<p>No English product found.</p>";
@@ -274,6 +274,14 @@
     }
 
     async function confirmSelection() {
+      if (!resultsDiv) {
+        resultsDiv = document.getElementById("results");
+        if (!resultsDiv) {
+          console.error("❌ resultsDiv not found in DOM.");
+          return;
+        }
+      }
+      
       if (!selectedProduct) {
         alert("Please select a product first.");
         return;
