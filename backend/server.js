@@ -21,6 +21,11 @@ app.use(session({
   secret: process.env.SESSION_SECRET, 
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,  
+    collectionName: 'sessions',       
+    ttl: 10 * 24 * 60 * 60  //10 days           
+  }),
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',   
