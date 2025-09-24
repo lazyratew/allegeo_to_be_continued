@@ -208,6 +208,7 @@
     const userEmail = localStorage.getItem("userEmail") || "test@example.com";
     let userAllergies = {};
     let selectedProduct = null;
+    const resultsDiv = document.getElementById("results"); //trying to make this globally accessiable
 
     async function loadUserAllergies() {
       const res = await fetch(`${BACKEND_URL}/api/user/profile?email=${encodeURIComponent(userEmail)}`);
@@ -223,8 +224,7 @@
       const res = await fetch(`${BACKEND_URL}/products/search?q=${encodeURIComponent(query)}&email=${encodeURIComponent(userEmail)}`);
       const products = await res.json();
 
-      const resultsDiv = document.getElementById("results");
-      resultsDiv.innerHTML = "";
+      resultsDiv.innerHTML = ""; //trying to take this from line 211
 
       if (!products.length) {
         resultsDiv.innerHTML = "<p>No English product found.</p>";
