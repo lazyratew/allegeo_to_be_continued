@@ -11,12 +11,6 @@ const scanRouter = require('./routes/scan'); //for the scan_page.html file
 const productRoutes = require('./routes/products');
 const app = express();
 
-app.use(express.json());
-app.use(cors({
-  origin: 'https://allegeo.netlify.app', 
-  credentials: true
-}));
-
 app.use(session({
   name: 'sessionId',
   secret: process.env.SESSION_SECRET || 'secret', 
@@ -28,6 +22,12 @@ app.use(session({
     sameSite: 'lax',     // required for Netlify <-> Render cross-domain
     maxAge: 24 * 60 * 60 * 1000 // 1 day
   },
+}));
+
+app.use(express.json());
+app.use(cors({
+  origin: 'https://allegeo.netlify.app', 
+  credentials: true
 }));
 
 // Middleware
