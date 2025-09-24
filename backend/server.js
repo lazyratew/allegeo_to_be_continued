@@ -17,7 +17,7 @@ app.use(cors({
 }));
 
 app.use(session({
-  name: 's_id',
+  name: 'sid',
   secret: process.env.SESSION_SECRET, 
   resave: false,
   saveUninitialized: false,
@@ -55,9 +55,6 @@ mongoose.connection.on('error', (err) => {
 mongoose.connection.on('disconnected', () => {
   console.log('Mongoose default connection is disconnected');
 });
-
-// Auth routes
-app.use('/api/auth', authRouter);
 
 // Root route
 app.get('/', (req, res) => {
