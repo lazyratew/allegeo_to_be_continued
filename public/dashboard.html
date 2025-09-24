@@ -306,39 +306,7 @@
 
   <script>
     const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com";
-
-    window.addEventListener('DOMContentLoaded', async () => {
-      const email = localStorage.getItem('userEmail');
-      if (!email) return alert('Not logged in');
-
-      try {
-        const res = await fetch(`${BACKEND_URL}/api/user/profile?email=${email}`);
-        const { allergies } = await res.json();
-        for (const [allergen, level] of Object.entries(allergies || {})) {
-          if (!addedAllergies.has(allergen)) {
-            addedAllergies.add(allergen);
-            addCard(allergen, allergenIcons[allergen] || "");
-
-            // Set the severity level in the dropdown
-            setTimeout(() => {
-              const card = [...document.querySelectorAll('.card')].find(c =>
-                c.querySelector('h3').textContent === allergen
-              );
-              if (card) {
-                const select = card.querySelector('select');
-                if (select) select.value = level;
-              }
-            }, 100);
-          }
-        }
-      } catch (err) {
-        console.error('Failed to load allergy data:', err);
-      }
-    });
-
-    document.getElementById('addAllergyBtn').addEventListener('click', () => {
-      document.getElementById('allergyDropdown').classList.toggle('hidden');
-    });
+    const addedAllergies = new Set();
 
     const allergenIcons = {
       "Milk": "https://img.icons8.com/color/48/milk-bottle.png",
@@ -362,7 +330,33 @@
       "Garlic": "https://img.icons8.com/color/48/garlic.png"
     };
 
-    const addedAllergies = new Set();
+    // -------------------- Check login & load allergies --------------------
+    async function loadAllergies() {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/user/profile`, {
+          method: "GET",
+          credentials: "include"
+        });
+        if (!res.ok) throw new Error("Not logged in");
+        const data = await res.json();
+        const allergies = data.allergies || {};
+
+        for (const [allergen, level] of Object.entries(allergies)) {
+          if (!addedAllergies.has(allergen)) {
+            addedAllergies.add(allergen);
+            addCard(allergen, allergenIcons[allergen] || "", level);
+          }
+        }
+      } catch (err) {
+        alert("Please log in first.");
+        window.location.href = "login.html";
+      }
+    }
+
+    // -------------------- Allergy dropdown --------------------
+    document.getElementById('addAllergyBtn').addEventListener('click', () => {
+      document.getElementById('allergyDropdown').classList.toggle('hidden');
+    });
 
     document.getElementById('allergyDropdown').addEventListener('change', function () {
       const selected = this.value;
@@ -376,29 +370,35 @@
       this.classList.add('hidden');
     });
 
-    function addCard(allergen, iconUrl) {
+    // -------------------- Add card --------------------
+    function addCard(allergen, iconUrl, level = "Not Allergic") {
       const container = document.getElementById('cardContainer');
       const card = document.createElement('div');
       card.className = "card";
       card.innerHTML = `
-        <button class="remove-btn" title="Remove">&times;</button>
-        <img src="${iconUrl}" alt="${allergen}" class="allergen-img">
-        <h3>${allergen}</h3>
-        <select>
-          <option>Not Allergic</option>
-          <option>Mild</option>
-          <option>Moderate</option>
-          <option>Severe</option>
-        </select>
-      `;
+    <button class="remove-btn" title="Remove">&times;</button>
+    <img src="${iconUrl}" alt="${allergen}" class="allergen-img">
+    <h3>${allergen}</h3>
+    <select>
+      <option>Not Allergic</option>
+      <option>Mild</option>
+      <option>Moderate</option>
+      <option>Severe</option>
+    </select>
+  `;
+      const select = card.querySelector('select');
+      select.value = level;
+
       card.querySelector('button').addEventListener('click', () => {
         container.removeChild(card);
         addedAllergies.delete(allergen);
       });
+
       container.appendChild(card);
     }
 
-    function saveProfile() {
+    // -------------------- Save profile --------------------
+    async function saveProfile() {
       const data = {};
       document.querySelectorAll('#cardContainer > div').forEach(card => {
         const allergen = card.querySelector('h3').textContent;
@@ -406,33 +406,29 @@
         data[allergen] = level;
       });
 
-      const email = localStorage.getItem('userEmail');
-      if (!email) {
-        alert("User email not found. Please log in again.");
-        return;
-      }
-
-      fetch(`${BACKEND_URL}/api/user/profile`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, allergies: data })
-      })
-        .then(res => res.json())
-        .then(response => {
-          console.log("Saved profile:", response);
-          alert("Profile saved!");
-
-          // ✅ Redirect to profile page after save
-          window.location.href = 'profile.html';
-        })
-        .catch(err => {
-          console.error("Error saving profile:", err);
-          alert("An error occurred. Check console.");
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/user/profile`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ allergies: data }) // no email needed
         });
+
+        if (!res.ok) throw new Error("Failed to save profile");
+        const result = await res.json();
+        console.log("Saved profile:", result);
+        alert("Profile saved!");
+        window.location.href = 'profile.html';
+      } catch (err) {
+        console.error("Error saving profile:", err);
+        alert("An error occurred. Check console.");
+      }
     }
 
-
+    // -------------------- Initialize --------------------
+    window.addEventListener('DOMContentLoaded', loadAllergies);
   </script>
+
 </body>
 
 </html>

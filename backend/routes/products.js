@@ -7,7 +7,7 @@ const SearchHistory = require('../models/searchhistory');
 const User = require('../models/user');
 const DetectionResult = require('../models/detectionresult');
 
-const SYNONYMS = {
+const SYNONYMS = { //add scientific name 
   "tomatoes": ["tomato", "tomato paste", "tomato sauce"],
   "peanuts": ["peanut", "groundnut", "arachis"],
   "milk": ["milk", "milk powder", "milk solids", "casein", "lactose"],
@@ -30,13 +30,11 @@ function detectAllergensInText(text, allergiesObj = {}) {
 
   for (const [allergen, severity] of Object.entries(allergiesObj)) {
     const key = String(allergen).toLowerCase();
-    // gather terms to test: the allergen name + synonyms if present
     const terms = new Set([key]);
     if (SYNONYMS[key]) {
       SYNONYMS[key].forEach(syn => terms.add(syn.toLowerCase()));
     }
 
-    // test each term; stop on first match for this allergen
     for (const term of terms) {
       const rx = new RegExp('\\b' + escapeRegExp(term) + '\\b', 'i');
       if (rx.test(normalized) || normalized.includes(term)) {
@@ -45,18 +43,16 @@ function detectAllergensInText(text, allergiesObj = {}) {
       }
     }
   }
-
   return flagged;
 }
 
-
 router.get('/search', async (req, res) => {
   try {
-    const query = req.query.q;
-    const email = req.query.email && req.query.email.toLowerCase();
+    const email = req.session?.email;
+    if (!email) return res.status(401).json({ error: 'Unauthorized: no session found' });
 
+    const query = req.query.q;
     if (!query) return res.status(400).json({ error: 'Query required' });
-    if (!email) return res.status(400).json({ error: 'Email required' });
 
     const qLower = query.toLowerCase();
 
@@ -93,7 +89,6 @@ router.get('/search', async (req, res) => {
     const products = (data.products || []).map(p => {
       const ingredientsArr = (p.ingredients_text || "").split(",").map(i => i.trim()).filter(Boolean);
       const productId = p.id || p._id || p.code || p.code || "";
-      // detect allergens across the ingredients string
       const ingredientText = (p.ingredients_text || "");
       const flagged = detectAllergensInText(ingredientText, allergiesObj);
 
@@ -134,12 +129,14 @@ router.get('/search', async (req, res) => {
 
 router.post('/storeSelected', async (req, res) => {
   try {
-    const { email, product } = req.body;
-    if (!email || !product) return res.status(400).json({ error: "Email and product required" });
+    const { product } = req.body;
+    const email = req.session?.email;
+    if (!email) return res.status(401).json({ error: "Unauthorized: no session found" });
+    if (!product) return res.status(400).json({ error: "Product required" });
 
     await SearchHistory.create({
       query: product.name.toLowerCase(),
-      results: [product], // only this one
+      results: [product],
       email: email,
     });
 

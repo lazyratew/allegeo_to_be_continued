@@ -265,10 +265,7 @@
   </div>
 
   <script>
-    // TODO: Replace with real email from login/session
-    const userEmail = localStorage.getItem('userEmail') || "test@example.com";
     const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com"
-
     const allergenIcons = {
       "Milk": "https://img.icons8.com/color/48/milk-bottle.png",
       "Egg": "https://cdn.britannica.com/94/151894-050-F72A5317/Brown-eggs.jpg",
@@ -294,7 +291,10 @@
 
     async function loadAllergies() {
       try {
-        const res = await fetch(`${BACKEND_URL}/api/user/profile?email=${encodeURIComponent(userEmail)}`);
+        const res = await fetch(`${BACKEND_URL}/api/user/profile`, {
+          credentials: 'include'
+        });
+        
         if (!res.ok) throw new Error('Failed to fetch allergies');
 
         const data = await res.json();
@@ -302,7 +302,6 @@
 
         // to Remove any old cards before adding new
         document.querySelectorAll(".card").forEach(el => el.remove());
-
         const severityMap = {
           Mild: "green",
           Moderate: "orange",
@@ -322,15 +321,13 @@
                 </div>
                 </div>
                 <img src="${iconUrl}" alt="${allergen}" style="width:50px; height:50px; object-fit:contain; border-radius:0.5rem;">
-                </div>
-                `;
+                </div>`;
           document.querySelector(".add-allergy-btn").insertAdjacentHTML("afterend", card);
         });
       } catch (err) {
         console.error("Error loading allergies:", err);
       }
     }
-    // Load on page load
     loadAllergies();
   </script>
 

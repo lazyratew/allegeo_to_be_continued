@@ -205,49 +205,52 @@
 
   <script>
     const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com"
-    let userEmail;
     let userAllergies = {};
     let selectedProduct = null;
     let searchResults = [];
     let resultsDiv = null;
 
-    const storedEmail = localStorage.getItem("userEmail");
-    if (!storedEmail) {
-      alert("Please log in first.");
-      window.location.href = "login.html";
-    } else {
-      userEmail = storedEmail;
-    }
-
-    async function loadUserAllergies() {
-      const res = await fetch(`${BACKEND_URL}/api/user/profile?email=${encodeURIComponent(userEmail)}`);
-      const data = await res.json();
-      userAllergies = data.allergies || {};
+    async function checkLogin() {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/user/profile`, {
+          method: "GET",
+          credentials: "include" // 🔑 send session cookie
+        });
+        if (!res.ok) throw new Error("Not logged in");
+        const data = await res.json();
+        userAllergies = data.allergies || {};
+      } catch (err) {
+        alert("Please log in first.");
+        window.location.href = "login.html";
+      }
     }
 
     async function searchProduct() { //need to add try-catch incase of a fetch err
       const query = document.getElementById("searchInput").value;
       if (!query) return;
 
-      const res = await fetch(`${BACKEND_URL}/products/search?q=${encodeURIComponent(query)}&email=${encodeURIComponent(userEmail)}`);
-      const products = await res.json();
+      try {
+        const res = await fetch(`${BACKEND_URL}/products/search?q=${encodeURIComponent(query)}`, {
+          credentials: "include"
+        });
+        const products = await res.json();
 
-      resultsDiv = document.getElementById("results");
-      resultsDiv.innerHTML = "<h2>Select the product you were looking for...</h2>";
+        resultsDiv = document.getElementById("results");
+        resultsDiv.innerHTML = "<h2>Select the product you were looking for...</h2>";
 
-      if (!products.length) {
-        resultsDiv.innerHTML = "<p>No English product found.</p>";
-        return;
-      }
-      searchResults = products;
+        if (!products.length) {
+          resultsDiv.innerHTML = "<p>No English product found.</p>";
+          return;
+        }
+        searchResults = products;
 
-      //shows all products with compare option 
-      products.forEach((product, index) => {
-        let ingredientsHtml = product.ingredients.map(
-          ing => `<div class="ingredient">${ing}</div>`
-        ).join("");
+        //shows all products with compare option 
+        products.forEach((product, index) => {
+          let ingredientsHtml = product.ingredients.map(
+            ing => `<div class="ingredient">${ing}</div>`
+          ).join("");
 
-        const card = `
+          const card = `
       <label class="card">
         <input type="radio" name="productSelect" onchange="setSelectedProduct(${index})">
         <div class="card-content">
@@ -257,16 +260,19 @@
         </div>
       </label>
     `;
-        resultsDiv.insertAdjacentHTML("beforeend", card);
-      });
-      // Add confirm button after all results
-      resultsDiv.insertAdjacentHTML("beforeend", `
+          resultsDiv.insertAdjacentHTML("beforeend", card);
+        });
+        // Add confirm button after all results
+        resultsDiv.insertAdjacentHTML("beforeend", `
       <button onclick="confirmSelection()" style="margin-top:1rem; padding:0.8rem; background:var(--burgundy); color:white; border:none; border-radius:0.5rem; cursor:pointer;">
         ✅ Confirm Selection
       </button>
     `);
+      } catch (err) {
+        console.error("Search error:", err);
+        alert("Failed to search products. Try again.");
+      }
     }
-
 
     function setSelectedProduct(index) {
       selectedProduct = searchResults[index];
@@ -274,17 +280,14 @@
     }
 
     async function confirmSelection() {
-      if (!resultsDiv) {
-        resultsDiv = document.getElementById("results");
-        if (!resultsDiv) {
-          console.error("❌ resultsDiv not found in DOM.");
-          return;
-        }
-      }
+      if (!resultsDiv) resultsDiv = document.getElementById("results");
+      if (!resultsDiv) return console.error("❌ resultsDiv not found in DOM.");
+
       if (!selectedProduct) {
         alert("Please select a product first.");
         return;
       }
+
 
       // Use backend-detected allergens
       let ingredientsHtml = "";
@@ -313,16 +316,20 @@
     </div>
   `;
       resultsDiv.innerHTML = card;
-
-      // Save only the confirmed product to DB
-      await fetch(`${BACKEND_URL}/products/storeSelected`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: userEmail, product: selectedProduct }),
-      });
+      try {
+        await fetch(`${BACKEND_URL}/products/storeSelected`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include", // 🔑 send session cookie
+          body: JSON.stringify({ product: selectedProduct })
+        });
+      } catch (err) {
+        console.error("Failed to store selected product:", err);
+      }
     }
 
-    loadUserAllergies();
+    // Run login check on page load
+    checkLogin();
   </script>
 </body>
 

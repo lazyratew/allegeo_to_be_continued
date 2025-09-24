@@ -201,17 +201,17 @@
   <script>
     // Wait until the whole page is loaded
     window.addEventListener('DOMContentLoaded', () => {
-      console.log("✅ JS script is running");
+      console.log("JS script is running");
 
       const form = document.getElementById('signupForm');
       if (!form) {
-        console.error("❌ Form not found");
+        console.error("err Form not found");
         return;
       }
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        console.log("🚀 Submit clicked");
+        console.log("Submit clicked");
 
         const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com";
         const username = document.getElementById('username').value;
@@ -224,22 +224,25 @@
           alert("Passwords don't match.");
           return;
         }
+        try {
+          const res = await fetch(`${BACKEND_URL}/api/auth/signup`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, phone, password }),
+            credentials: 'include' //allow session cookie to be set
+          });
+          const result = await res.json();
 
-        const res = await fetch(`${BACKEND_URL}/api/auth/signup`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, email, phone, password }),
-          credentials: 'include' //allow session cookie to be set
-        });
-
-
-        const result = await res.json();
-        if (res.ok) {
-          alert("Signup successful!");
-          localStorage.setItem('userEmail', result.email || email);
-          window.location.href = 'profile.html';
-        } else {
-          alert("Signup failed: " + (result.error || "Unknown error"));
+          if (res.ok) {
+            alert("Signup successful!");
+            localStorage.setItem('userEmail', result.email || email);
+            window.location.href = 'profile.html';
+          } else {
+            alert("Signup failed: " + (result.error || "Unknown error"));
+          }
+        } catch (err) {
+          console.error("Network or server error:", err);
+          alert("Could not signup. Please check your connection or try again later.");
         }
       });
     });

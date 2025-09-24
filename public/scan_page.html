@@ -120,8 +120,6 @@
   </div>
 
   <script>
-    // Ensure this matches how you store user email elsewhere
-    const userEmail = localStorage.getItem('userEmail') || 'anonymous';
     const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com";
 
     function processImage() {
@@ -141,13 +139,13 @@
       fetch(`${BACKEND_URL}/api/scan/analyze-image`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageBase64: base64Image, email: userEmail }),
+        credentials: 'include',
+        body: JSON.stringify({ imageBase64: base64Image}),
       })
         .then(res => res.json())
         .then(data => {
           if (data.success) {
             document.getElementById('ocrResult').textContent = data.text;
-            // Show flagged summary if any (simple UX for now)
             if (Array.isArray(data.flagged) && data.flagged.length) {
               alert('⚠️ Allergens found: ' + data.flagged.map(f => `${f.allergen} (${f.severity})`).join(', '));
             }
@@ -164,12 +162,12 @@
     async function analyzeManualInput() {
       const input = document.getElementById("manualInput").value.trim();
       if (!input) return alert('Please enter ingredients first.');
-
       try {
         const res = await fetch(`${BACKEND_URL}/api/scan/analyze-text`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: input, email: userEmail })
+          credentials: 'include',
+          body: JSON.stringify({ text: input})
         });
         const data = await res.json();
         if (res.ok) {
@@ -188,8 +186,5 @@
       }
     }
   </script>
-
-
 </body>
-
 </html>
