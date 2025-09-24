@@ -64,7 +64,6 @@ router.get('/search', async (req, res) => {
     const cached = await SearchHistory.findOne({ email, query: qLower });
     if (cached) {
       console.log('✅ Served products from cache for', email);
-      // If cached results already contain flaggedAllergens, return them directly.
       return res.json(cached.results);
     }
 
@@ -107,13 +106,6 @@ router.get('/search', async (req, res) => {
       };
     });
 
-    // 3. Save to SearchHistory cache (per-user) — we store the products array (with flaggedAllergens)
-    await SearchHistory.create({
-      email,
-      query: qLower,
-      results: products
-    });
-
     // 4. Save detection summary (for UI + later retrieval)
     // Build a flattened flaggedSummary across all products
     const flaggedSummary = [];
@@ -131,7 +123,6 @@ router.get('/search', async (req, res) => {
       products,
       flaggedSummary
     });
-
     console.log('🌍 Served from OpenFoodFacts API for', email);
     res.json(products);
 
@@ -140,5 +131,24 @@ router.get('/search', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+router.post('/storeSelected', async (req, res) => {
+  try {
+    const { email, product } = req.body;
+    if (!email || !product) return res.status(400).json({ error: "Email and product required" });
+
+    await SearchHistory.create({
+      query: product.name.toLowerCase(),
+      results: [product], // only this one
+      email: email,
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("❌ Error in /products/storeSelected:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 
 module.exports = router;

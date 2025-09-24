@@ -259,8 +259,9 @@
     }
 
 
-    function setSelectedProduct(product) {
-      selectedProduct = product;
+    function setSelectedProduct(index) {
+      selectedProduct = searchResults[index];
+      //maybe add a console.log here for alert
     }
 
     async function confirmSelection() {
