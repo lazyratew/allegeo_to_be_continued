@@ -312,7 +312,8 @@
       </div>
     </div>
   `;
-      resultsDiv.insertAdjacentHTML("beforeend", card);
+  resultsDiv.innerHTML = card;
+      //resultsDiv.insertAdjacentHTML("beforeend", card); //uncomment this
 
       /*const card = `
       <div class="card selected">
