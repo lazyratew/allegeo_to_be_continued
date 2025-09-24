@@ -237,20 +237,19 @@
         return;
       }
 
-      // Compare against allergies
-      const resultsDiv = document.getElementById("results");
-      const flaggedIngredients = selectedProduct.ingredients.map(ing => {
-        const isAllergen = Object.keys(userAllergies).some(allergy =>
-          ing.toLowerCase().includes(allergy.toLowerCase())
-        );
-        return { name: ing, isAllergen };
-      });
-
+      // Use backend-detected allergens
       let ingredientsHtml = "";
-      flaggedIngredients.forEach(ing => {
-        ingredientsHtml += `<div class="ingredient ${ing.isAllergen ? 'flagged' : ''}">
-                            ${ing.name}${ing.isAllergen ? ' ⚠️' : ''}
+      selectedProduct.ingredients.forEach(ing => {
+        const matched = selectedProduct.flaggedAllergens.find(f =>
+          ing.toLowerCase().includes(f.allergen.toLowerCase())
+        );
+        if (matched) {
+          ingredientsHtml += `<div class="ingredient flagged">
+                            ${ing} ⚠️ (${matched.allergen} – ${matched.severity})
                           </div>`;
+        } else {
+          ingredientsHtml += `<div class="ingredient">${ing}</div>`;
+        }
       });
 
       const card = `

@@ -13,3 +13,5 @@ pages to create:
 -help page
 -compare page
 -results page
+
+-OCR cannot be used because the file is too large to analyze
