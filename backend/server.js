@@ -1,7 +1,5 @@
-require('dotenv').config();
 const path = require('path');
-
-// Import required packages
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -13,29 +11,27 @@ const scanRouter = require('./routes/scan'); //for the scan_page.html file
 const productRoutes = require('./routes/products');
 const app = express();
 
+app.use(express.json());
+app.use(cors({
+  origin: 'https://allegeo.netlify.app', 
+  credentials: true
+}));
+
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'supersecretstring', // store in .env
+  name: 'sessionId',
+  secret: process.env.SESSION_SECRET || 'secret', 
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI,
-    collectionName: 'sessions',
-  }),
   cookie: {
     httpOnly: true,
-    secure: true,         // Render uses HTTPS
-    sameSite: 'none',     // required for Netlify <-> Render cross-domain
-    maxAge: 1000 * 60 * 60 * 24, // 1 day
+    secure: process.env.NODE_ENV === 'production',   
+    sameSite: 'lax',     // required for Netlify <-> Render cross-domain
+    maxAge: 24 * 60 * 60 * 1000 // 1 day
   },
 }));
 
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors({
-  origin: 'https://allegeo.netlify.app', //front-end deployed with netlify, through github
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
 app.use(express.json()); // for parsing application/json
 app.use('/api/auth', authRouter);
 app.use('/api/user', userinfoRouter);
@@ -72,5 +68,5 @@ app.get('/', (req, res) => {
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
+  console.log(`🚀 Server is running on`);
 });
