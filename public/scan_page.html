@@ -120,6 +120,10 @@
   </div>
 
   <script>
+    // Ensure this matches how you store user email elsewhere
+    const userEmail = localStorage.getItem('userEmail') || 'anonymous';
+    const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com";
+
     function processImage() {
       const fileInput = document.getElementById("imageUpload");
       const file = fileInput.files[0];
@@ -134,16 +138,19 @@
     }
 
     function sendToServer(base64Image) {
-      const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com";
       fetch(`${BACKEND_URL}/api/scan/analyze-image`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageBase64: base64Image }),
+        body: JSON.stringify({ imageBase64: base64Image, email: userEmail }),
       })
         .then(res => res.json())
         .then(data => {
           if (data.success) {
             document.getElementById('ocrResult').textContent = data.text;
+            // Show flagged summary if any (simple UX for now)
+            if (Array.isArray(data.flagged) && data.flagged.length) {
+              alert('⚠️ Allergens found: ' + data.flagged.map(f => `${f.allergen} (${f.severity})`).join(', '));
+            }
           } else {
             document.getElementById('ocrResult').textContent = 'Error processing image.';
           }
@@ -154,9 +161,31 @@
         });
     }
 
-    function analyzeManualInput() { //this is doing less than the bare minimum fix it. 
-      const input = document.getElementById("manualInput").value;
-      document.getElementById("manualResult").textContent = `You entered:\n${input}`;
+    async function analyzeManualInput() {
+      const input = document.getElementById("manualInput").value.trim();
+      if (!input) return alert('Please enter ingredients first.');
+
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/scan/analyze-text`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: input, email: userEmail })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          document.getElementById('manualResult').textContent = data.text || input;
+          if (Array.isArray(data.flagged) && data.flagged.length) {
+            alert('⚠️ Allergens found: ' + data.flagged.map(f => `${f.allergen} (${f.severity})`).join(', '));
+          } else {
+            alert('No allergens found in the entered text.');
+          }
+        } else {
+          document.getElementById('manualResult').textContent = 'Error analyzing input.';
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Failed to analyze input.');
+      }
     }
   </script>
 
