@@ -14,7 +14,7 @@ router.post('/signup', async (req, res) => {
 
     const user = new User({ username, email, phone, password });
     await user.save();
-    
+
     console.log('User saved:', user);
     return res.status(201).json({ message: 'User created' });
   } catch (err) {
@@ -23,7 +23,7 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-//login
+ //login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -39,13 +39,19 @@ router.post('/login', async (req, res) => {
 
     if (user.password !== password) {
       return res.status(401).json({ error: 'Incorrect password' });
-    }
+    }  
     //store session
     req.session.userId = user._id;
     req.session.email = user.email;
 
-    console.log('✅ Login successful:', user.email);
-    return res.status(200).json({ message: 'Login successful', email: user.email });
+    req.session.save(err => {
+      if (err) {
+        console.error("❌ Session save error:", err);
+        return res.status(500).json({ error: "Could not save session" });
+      }
+      console.log('✅ Login successful:', user.email);
+      return res.status(200).json({ message: 'Login successful', email: user.email });
+    });
   } catch (err) {
     console.error('❌ Login error:', err);
     return res.status(500).json({ error: 'Server error' });
