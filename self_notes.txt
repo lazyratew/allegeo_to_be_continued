@@ -15,3 +15,5 @@ pages to create:
 -results page
 
 -OCR cannot be used because the file is too large to analyze
+- the model detectionresults is storing ALL the search results, instead of only the one used for detection (fix this)
+- add scientific ingredient names to map (synonms)
