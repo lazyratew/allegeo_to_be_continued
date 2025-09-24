@@ -96,17 +96,46 @@
     }
 
     .card {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
       background-color: var(--white);
       border: 2px solid var(--gold);
       border-radius: 1rem;
       padding: 1rem;
       margin-bottom: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .card:hover {
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .card input[type="radio"] {
+      margin-top: 0.5rem;
+      transform: scale(1.2);
+      cursor: pointer;
     }
 
     .card.selected {
       border: 3px solid var(--burgundy);
       background-color: #fff5f7;
       box-shadow: 0 0 10px rgba(94, 8, 24, 0.4);
+    }
+
+    .confirm-btn {
+      margin-top: 1rem;
+      padding: 0.8rem;
+      background: var(--burgundy);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      width: 100%;
+      text-align: center;
     }
 
 
@@ -186,6 +215,7 @@
       userAllergies = data.allergies || {};
     }
 
+    let searchResults = [];
     async function searchProduct() {
       const query = document.getElementById("searchInput").value;
       if (!query) return;
@@ -200,22 +230,24 @@
         resultsDiv.innerHTML = "<p>No English product found.</p>";
         return;
       }
+      searchResults = products;
 
       //shows all products with compare option 
-      products.forEach((product) => {
-        let ingredientsHtml = "";
-        product.ingredients.forEach(ing => {
-          ingredientsHtml += `<div class="ingredient">${ing}</div>`;
-        });
+      products.forEach((product, index) => {
+        let ingredientsHtml = product.ingredients.map(
+          ing => `<div class="ingredient">${ing}</div>`
+        ).join("");
 
         const card = `
-          <div class="card">
-            <input type="radio" name="productSelect" onchange='setSelectedProduct(${JSON.stringify(product)})'>
-            <h2>${product.name} (${product.brand})</h2>
-            <h3>Ingredients:</h3>
-            ${ingredientsHtml}
-          </div>
-        `;
+      <label class="card">
+        <input type="radio" name="productSelect" onchange="setSelectedProduct(${index})">
+        <div class="card-content">
+          <h2>${product.name} <span style="font-size:0.9rem; color:#666;">(${product.brand})</span></h2>
+          <h3>Ingredients:</h3>
+          ${ingredientsHtml}
+        </div>
+      </label>
+    `;
         resultsDiv.insertAdjacentHTML("beforeend", card);
       });
       // Add confirm button after all results
