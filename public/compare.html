@@ -205,11 +205,19 @@
 
   <script>
     const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com"
-    const userEmail = localStorage.getItem("userEmail") || "test@example.com";
+    let userEmail;
     let userAllergies = {};
     let selectedProduct = null;
     let searchResults = [];
     let resultsDiv;
+
+    const storedEmail = localStorage.getItem("userEmail");
+    if (!storedEmail) {
+      alert("Please log in first.");
+      window.location.href = "login.html";
+    } else {
+      userEmail = storedEmail;
+    }
 
     async function loadUserAllergies() {
       const res = await fetch(`${BACKEND_URL}/api/user/profile?email=${encodeURIComponent(userEmail)}`);
@@ -224,9 +232,9 @@
       const res = await fetch(`${BACKEND_URL}/products/search?q=${encodeURIComponent(query)}&email=${encodeURIComponent(userEmail)}`);
       const products = await res.json();
 
-      const resultsDiv = document.getElementById("results"); 
-      resultsDiv.innerHTML = ""; 
-      
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = "";
+
       if (!products.length) {
         resultsDiv.innerHTML = "<p>No English product found.</p>";
         return;
