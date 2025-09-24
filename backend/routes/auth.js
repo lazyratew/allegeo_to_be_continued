@@ -59,7 +59,7 @@ router.post('/logout', (req, res) => {
       console.error(err);
       return res.status(500).json({ error: 'Could not log out' });
     }
-    res.clearCookie('connect.sid'); // default cookie name
+    res.clearCookie('sid'); // default cookie name
     res.json({ message: 'Logged out' });
   });
 });
