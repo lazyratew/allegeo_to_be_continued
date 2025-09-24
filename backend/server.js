@@ -4,7 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const session = require('express-session');
-const MongoStore = require('connect-mongo');
+const MongoStore = require('connect-mongo'); //looks weird
 const authRouter = require('./routes/auth');  //file created for user credentials
 const userinfoRouter = require('./routes/userinfo'); //file created for user information
 const scanRouter = require('./routes/scan'); //for the scan_page.html file
@@ -17,8 +17,8 @@ app.use(cors({
 }));
 
 app.use(session({
-  name: 'sessionId',
-  secret: true, 
+  name: 's_id',
+  secret: process.env.SESSION_SECRET, 
   resave: false,
   saveUninitialized: false,
   cookie: {

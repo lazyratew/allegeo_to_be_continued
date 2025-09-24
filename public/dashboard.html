@@ -330,7 +330,6 @@
       "Garlic": "https://img.icons8.com/color/48/garlic.png"
     };
 
-    // -------------------- Check login & load allergies --------------------
     async function loadAllergies() {
       try {
         const res = await fetch(`${BACKEND_URL}/api/user/profile`, {
@@ -353,7 +352,6 @@
       }
     }
 
-    // -------------------- Allergy dropdown --------------------
     document.getElementById('addAllergyBtn').addEventListener('click', () => {
       document.getElementById('allergyDropdown').classList.toggle('hidden');
     });
@@ -370,7 +368,6 @@
       this.classList.add('hidden');
     });
 
-    // -------------------- Add card --------------------
     function addCard(allergen, iconUrl, level = "Not Allergic") {
       const container = document.getElementById('cardContainer');
       const card = document.createElement('div');
@@ -397,7 +394,6 @@
       container.appendChild(card);
     }
 
-    // -------------------- Save profile --------------------
     async function saveProfile() {
       const data = {};
       document.querySelectorAll('#cardContainer > div').forEach(card => {
@@ -425,7 +421,6 @@
       }
     }
 
-    // -------------------- Initialize --------------------
     window.addEventListener('DOMContentLoaded', loadAllergies);
   </script>
 
