@@ -13,45 +13,48 @@
       --gold: #d4af37;
     }
 
+    .allegeo-logo {
+      height: 85px;
+      width: auto;
+      display: block;
+    }
+
+    .logout-logo {
+      height: 50px;
+      width: auto;
+      display: block;
+    }
+
     body {
       font-family: 'Poppins', sans-serif;
       background-color: var(--white);
       color: var(--burgundy);
       margin: 0;
       padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     nav {
       background-color: var(--gold);
-      padding: 1rem 1.5rem;
+      height: 60px;
+      padding: 0 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      overflow: hidden;
     }
 
-    .nav-title {
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: var(--burgundy);
-    }
-
-    .nav-link {
-      font-family: 'Poppins', sans-serif;
-      font-size: 1rem;
-      text-decoration: none;
-      color: var(--burgundy);
-    }
-
-    .nav-underline {
-      height: 6px;
-      background-color: var(--burgundy);
-      width: 100%;
+    .nav-icon {
+      font-size: 1.4rem;
+      cursor: pointer;
     }
 
     main {
+      flex: 1;
       max-width: 600px;
-      margin: 4rem auto;
+      margin: 2rem auto 6rem;
       padding: 2rem;
       border-radius: 1rem;
       border: 5px solid var(--gold);
@@ -59,6 +62,43 @@
         0 0 30px 10px rgba(255, 255, 255, 0.6),
         0 0 50px 20px rgba(255, 255, 255, 0.4);
     }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid #ddd;
+      padding: 8px 0;
+      z-index: 1000;
+    }
+
+    .bottom-nav .nav-item {
+      flex: 1;
+      text-align: center;
+      color: #555;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 6px;
+      border-radius: 12px;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .bottom-nav .nav-item .icon {
+      display: block;
+      font-size: 20px;
+    }
+
+    .bottom-nav .nav-item.active,
+    .bottom-nav .nav-item:hover {
+      background: rgba(19, 0, 7, 0.1);
+      color: #5e0818;
+    }
+
 
     h2 {
       text-align: center;
@@ -109,11 +149,15 @@
 
 <body>
 
+  <!-- Navigation -->
   <nav>
-    <div class="nav-title">Allegeo</div>
-    <a href="index.html" class="nav-link">Home</a>
+    <div class="nav-title">
+      <img src="images/allegeo_shiny.png" alt="Allegeo Logo" class="allegeo-logo">
+    </div>
+    <a href="login.html" class="nav-icon">
+      <img src="images/logout_shiny.png" alt="Logout" class="logout-logo">
+    </a>
   </nav>
-  <div class="nav-underline"></div>
 
   <main>
     <h2>Feedback</h2>
@@ -168,5 +212,26 @@
       }
     });
   </script>
+
+  <!-- Bottom Navigation Bar -->
+  <div class="bottom-nav">
+    <a href="profile.html" class="nav-item">
+      <span class="icon">👤</span>
+      <span>Profile</span>
+    </a>
+    <a href="compare.html" class="nav-item">
+      <span class="icon">🔍</span>
+      <span>Compare</span>
+    </a>
+    <a href="scan_page.html" class="nav-item">
+      <span class="icon">📷</span>
+      <span>Scan</span>
+    </a>
+    <a href="feedback.html" class="nav-item active">
+      <span class="icon">💬</span>
+      <span>Feedback</span>
+    </a>
+  </div>
+
 </body>
 </html>

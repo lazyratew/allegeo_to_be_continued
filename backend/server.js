@@ -1,5 +1,7 @@
 const path = require('path');
 require('dotenv').config();
+
+console.log("MONGO_URI:", process.env.MONGO_URI);
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -11,13 +13,15 @@ const scanRouter = require('./routes/scan'); //for the scan_page.html file
 const productRoutes = require('./routes/products');
 const app = express();
 
+//for testing purposes delete later
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
 app.use(cors({
   origin: 'https://allegeo.netlify.app', 
   credentials: true
 }));
 
-app.set('trust proxy', 1);  //please work 
-
+app.set('trust proxy', 1);  //added afer cookie sessions err 
 app.use(session({
   name: 'sid',
   secret: process.env.SESSION_SECRET, 
@@ -72,4 +76,9 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on`);
+});
+
+//this is for testing on localhost
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
