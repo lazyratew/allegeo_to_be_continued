@@ -236,7 +236,11 @@
           if (res.ok) {
             alert("Signup successful!");
             localStorage.setItem('userEmail', result.email || email);
-            window.location.href = 'profile.html';
+            if (result.hasAllergies) {
+              window.location.href = 'profile.html';
+            } else {
+              window.location.href = 'dashboard.html';
+            }
           } else {
             alert("Signup failed: " + (result.error || "Unknown error"));
           }

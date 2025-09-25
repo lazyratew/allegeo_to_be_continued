@@ -7,6 +7,120 @@
   <title>Compare Food Items</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <style>
+    .allegeo-logo {
+      height: 85px;
+      width: auto;
+      display: block;
+    }
+    .logout-logo {
+      height: 50px;
+      width: auto;
+      display: block;
+    }
+    nav {
+      background: rgba(212, 175, 55, 0.85);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 2px 12px rgba(94, 8, 24, 0.07);
+      height: 64px;
+      padding: 0 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom-left-radius: 1.2rem;
+      border-bottom-right-radius: 1.2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1100;
+      overflow: hidden;
+    }
+    .nav-icon {
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      border-radius: 50%;
+      transition: background 0.18s;
+      padding: 0.2rem;
+    }
+    .nav-icon:hover {
+      background: rgba(94, 8, 24, 0.08);
+    }
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100vw;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: space-around;
+      border-top: 1.5px solid #e7d9b7;
+      box-shadow: 0 -2px 12px rgba(94, 8, 24, 0.06);
+      padding: 0.2rem 0 0.2rem 0;
+      z-index: 1200;
+      border-top-left-radius: 1.2rem;
+      border-top-right-radius: 1.2rem;
+    }
+    .bottom-nav .nav-item {
+      flex: 1;
+      text-align: center;
+      color: #5e0818;
+      text-decoration: none;
+      font-size: 1.05rem;
+      padding: 0.7rem 0 0.3rem 0;
+      border-radius: 1.2rem;
+      margin: 0 0.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.1rem;
+      transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+      position: relative;
+    }
+    .bottom-nav .nav-item .icon {
+      display: block;
+      font-size: 1.45rem;
+      margin-bottom: 0.1rem;
+      transition: color 0.18s;
+    }
+    .bottom-nav .nav-item.active,
+    .bottom-nav .nav-item:hover {
+      background: rgba(212, 175, 55, 0.13);
+      color: #7a0c25;
+      box-shadow: 0 2px 8px rgba(212, 175, 55, 0.08);
+    }
+    .bottom-nav .nav-item.active .icon,
+    .bottom-nav .nav-item:hover .icon {
+      color: #d4af37;
+    }
+    .bottom-nav .nav-item .nav-label {
+      font-size: 0.92rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+    @media (max-width: 600px) {
+      nav {
+        height: 56px;
+        padding: 0 0.5rem;
+      }
+      .allegeo-logo {
+        height: 60px;
+      }
+      .logout-logo {
+        height: 36px;
+      }
+      .bottom-nav {
+        padding: 0.1rem 0 0.1rem 0;
+      }
+      .bottom-nav .nav-item {
+        font-size: 0.98rem;
+        padding: 0.5rem 0 0.1rem 0;
+      }
+      .bottom-nav .nav-item .icon {
+        font-size: 1.2rem;
+      }
+    }
     :root {
       --burgundy: #5e0818;
       --white: #ffffff;
@@ -22,21 +136,6 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-    }
-
-    nav {
-      background-color: var(--gold);
-      padding: 1rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .nav-title {
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: var(--burgundy);
     }
 
     .main {
@@ -75,24 +174,68 @@
 
     .search-bar {
       display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border-radius: 2rem;
+      box-shadow: 0 2px 12px rgba(212, 175, 55, 0.10), 0 1.5px 6px rgba(94, 8, 24, 0.07);
+      padding: 0.3rem 0.5rem 0.3rem 1rem;
       margin-bottom: 1.5rem;
+      max-width: 500px;
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      transition: box-shadow 0.2s;
     }
-
+    .search-bar:focus-within {
+      box-shadow: 0 4px 18px rgba(212, 175, 55, 0.18), 0 2px 8px rgba(94, 8, 24, 0.10);
+    }
     .search-bar input {
       flex: 1;
-      padding: 0.8rem;
-      border: 2px solid var(--gold);
-      border-radius: 0.75rem 0 0 0.75rem;
-      outline: none;
-    }
-
-    .search-bar button {
-      padding: 0.8rem 1rem;
+      padding: 0.9rem 1.1rem;
       border: none;
-      background-color: var(--burgundy);
+      border-radius: 2rem;
+      outline: none;
+      font-size: 1.1rem;
+      background: #f8f6f2;
+      color: var(--burgundy);
+      transition: background 0.2s;
+    }
+    .search-bar input:focus {
+      background: #fffbe7;
+    }
+    .search-bar button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.7rem 1.1rem;
+      margin-left: 0.3rem;
+      border: none;
+      background: var(--burgundy);
       color: var(--white);
-      border-radius: 0 0.75rem 0.75rem 0;
+      border-radius: 2rem;
       cursor: pointer;
+      font-size: 1.2rem;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 1px 4px rgba(94, 8, 24, 0.08);
+    }
+    .search-bar button:hover, .search-bar button:focus {
+      background: #7a0c25;
+      box-shadow: 0 2px 8px rgba(94, 8, 24, 0.13);
+    }
+    @media (max-width: 600px) {
+      .search-bar {
+        max-width: 98vw;
+        padding: 0.2rem 0.2rem 0.2rem 0.7rem;
+      }
+      .search-bar input {
+        font-size: 1rem;
+        padding: 0.7rem 0.7rem;
+      }
+      .search-bar button {
+        font-size: 1.1rem;
+        padding: 0.6rem 0.8rem;
+      }
     }
 
     .card {
@@ -149,59 +292,69 @@
       color: red;
       font-weight: bold;
     }
-
-    footer {
-      background-color: var(--white);
-      padding: 0.7rem 1rem;
-      display: flex;
-      justify-content: space-around;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    footer a {
-      font-size: 1.5rem;
-      text-decoration: none;
-      color: var(--burgundy);
-    }
-
-    footer a.active {
-      color: var(--gold);
-    }
   </style>
 </head>
 
 <body>
   <nav>
-    <div class="nav-title">Allegeo</div>
-    <a href="login.html" class="nav-icon">Logout</a>
+    <div class="nav-title">
+      <img src="images/allegeo_shiny.png" alt="Allegeo Logo" class="allegeo-logo">
+    </div>
+    <a href="login.html" class="nav-icon" title="Logout" onclick="localStorage.removeItem('allergies'); sessionStorage.removeItem('allergies');">
+      <img src="images/logout_shiny.png" alt="Logout" class="logout-logo">
+    </a>
   </nav>
 
   <div class="main">
     <h1>Compare Food Items</h1>
     <div class="tabs">
-      <a href="profile.html">My Allergies</a>
-      <a href="compare.html" class="active">Compare</a>
-      <a href="dashboard.html">Edit Profile</a>
+  <a href="profile.html">My Allergies</a>
+  <a href="compare.html" class="active">Compare</a>
+  <a href="dashboard.html">Edit Profile</a>
     </div>
 
     <!-- Search -->
-    <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Search for a product..." />
-      <button onclick="searchProduct()">Search</button>
-    </div>
+    <form class="search-bar" onsubmit="event.preventDefault(); searchProduct();">
+      <input type="text" id="searchInput" placeholder="Search for a product..." aria-label="Search for a product" autocomplete="off" />
+      <button type="submit" aria-label="Search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="white" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </form>
 
     <!-- Results -->
     <div id="results"></div>
   </div>
 
-  <footer>
-    <a href="profile.html">🏠</a>
-    <a href="scan_page.html">📷</a>
-    <a href="#">⚙️</a>
-  </footer>
+  <div class="bottom-nav">
+    <a href="profile.html" class="nav-item" title="Profile">
+      <span class="icon">
+        <!-- Colorful user icon -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4.5" fill="#FFD36E" stroke="#5e0818" stroke-width="1.5"/><path d="M4.5 20c0-3.59 3.13-6.5 7-6.5s7 2.91 7 6.5" fill="#B6E2D3" stroke="#5e0818" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </span>
+      <span class="nav-label">Profile</span>
+    </a>
+    <a href="scan_page.html" class="nav-item" title="Scan">
+      <span class="icon">
+        <!-- Scan icon (from scan_page.html) -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#B6E2D3" stroke="#5e0818" stroke-width="1.5"/><path d="M8 12h8" stroke="#5e0818" stroke-width="1.5" stroke-linecap="round"/><path d="M12 8v8" stroke="#5e0818" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </span>
+      <span class="nav-label">Scan</span>
+    </a>
+    <a href="results.html" class="nav-item" title="Results">
+      <span class="icon">
+        <!-- Colorful bar chart icon -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="10" width="4" height="8" rx="1.5" fill="#B6E2D3" stroke="#5e0818" stroke-width="1.5"/><rect x="9.5" y="6" width="4" height="12" rx="1.5" fill="#FFD36E" stroke="#5e0818" stroke-width="1.5"/><rect x="16" y="13" width="4" height="5" rx="1.5" fill="#F9A1BC" stroke="#5e0818" stroke-width="1.5"/></svg>
+      </span>
+      <span class="nav-label">Results</span>
+    </a>
+    <a href="feedback.html" class="nav-item" title="Feedback">
+      <span class="icon">
+        <!-- Colorful feedback icon -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 19v-2.5A2.5 2.5 0 0 1 6.5 14h11A2.5 2.5 0 0 1 20 16.5V19" fill="#FFD36E" stroke="#5e0818" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="8" r="4" fill="#F9A1BC" stroke="#5e0818" stroke-width="1.5"/></svg>
+      </span>
+      <span class="nav-label">Feedback</span>
+    </a>
+  </div>
 
   <script>
     const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com"
@@ -238,14 +391,27 @@
         resultsDiv = document.getElementById("results");
         resultsDiv.innerHTML = "<h2>Select the product you were looking for...</h2>";
 
-        if (!products.length) {
-          resultsDiv.innerHTML = "<p>No English product found.</p>";
+        // Only show products with English name/brand/ingredients
+        const englishProducts = products.filter(product => {
+          // Heuristic: check if name, brand, and all ingredients are mostly ASCII
+          const isAscii = str => /^[\x00-\x7F\s.,'"()\-:;!?]+$/.test(str);
+          if (!isAscii(product.name) || !isAscii(product.brand)) return false;
+          if (!Array.isArray(product.ingredients) || !product.ingredients.length) return false;
+          return product.ingredients.every(isAscii);
+        });
+
+        if (!englishProducts.length) {
+          resultsDiv.innerHTML = `
+            <p style="color:#b00; font-weight:500;">No English product found.</p>
+            <button onclick="window.location.href='feedback.html'" style="margin:1rem auto; display:block; background:var(--gold); color:var(--burgundy); border:none; border-radius:0.7rem; padding:0.7rem 1.5rem; font-weight:bold; font-size:1rem; cursor:pointer;">Suggest a Product</button>
+            <p style="margin-top:1.2rem; color:#555;">Or try another search above.</p>
+          `;
           return;
         }
-        searchResults = products;
+        searchResults = englishProducts;
 
         //shows all products with compare option 
-        products.forEach((product, index) => {
+        englishProducts.forEach((product, index) => {
           let ingredientsHtml = product.ingredients.map(
             ing => `<div class="ingredient">${ing}</div>`
           ).join("");
@@ -288,41 +454,25 @@
         return;
       }
 
-
-      // Use backend-detected allergens
-      let ingredientsHtml = "";
-      const flaggedAllergens = selectedProduct.flaggedAllergens || []; //fallsback to empty array
-
-      selectedProduct.ingredients.forEach(ing => {
-        const matched = selectedProduct.flaggedAllergens.find(f =>
-          ing.toLowerCase().includes(f.allergen.toLowerCase())
-        );
-        if (matched) {
-          ingredientsHtml += `<div class="ingredient flagged">
-                            ${ing} ⚠️ (${matched.allergen} – ${matched.severity})
-                          </div>`;
-        } else {
-          ingredientsHtml += `<div class="ingredient">${ing}</div>`;
-        }
-      });
-
-      const card = `
-    <div class="card selected">
-      <div class="card-content">
-        <h2>${selectedProduct.name} (${selectedProduct.brand})</h2>
-        <h3>Ingredients:</h3>
-        ${ingredientsHtml}
-      </div>
-    </div>
-  `;
-      resultsDiv.innerHTML = card;
+      // Only redirect to results.html, do not show flagged results here anymore
+      const flaggedAllergens = selectedProduct.flaggedAllergens || [];
       try {
         await fetch(`${BACKEND_URL}/products/storeSelected`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          credentials: "include", // 🔑 send session cookie
+          credentials: "include",
           body: JSON.stringify({ product: selectedProduct })
         });
+        // Store flagged allergens for results page, include product name
+        const flaggedToStore = flaggedAllergens.map(f => ({
+          allergen: f.allergen,
+          severity: f.severity,
+          source: 'Compare',
+          productName: selectedProduct.name || ''
+        }));
+        localStorage.setItem('flaggedAllergies', JSON.stringify(flaggedToStore));
+        localStorage.setItem('flaggedProductName', selectedProduct.name || '');
+        window.location.href = 'results.html';
       } catch (err) {
         console.error("Failed to store selected product:", err);
       }

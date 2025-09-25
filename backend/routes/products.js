@@ -101,23 +101,7 @@ router.get('/search', async (req, res) => {
       };
     });
 
-    // 4. Save detection summary (for UI + later retrieval)
-    // Build a flattened flaggedSummary across all products
-    const flaggedSummary = [];
-    products.forEach(prod => {
-      prod.flaggedAllergens.forEach(f => {
-        flaggedSummary.push(Object.assign({}, f, { productId: prod.productId }));
-      });
-    });
-
-    await DetectionResult.create({
-      email,
-      source: 'compare',
-      query: qLower,
-      inputText: null,
-      products,
-      flaggedSummary
-    });
+    // Do NOT store all products in DetectionResult here. Only store on confirm (see /storeSelected)
     console.log('🌍 Served from OpenFoodFacts API for', email);
     res.json(products);
 
@@ -134,10 +118,30 @@ router.post('/storeSelected', async (req, res) => {
     if (!email) return res.status(401).json({ error: "Unauthorized: no session found" });
     if (!product) return res.status(400).json({ error: "Product required" });
 
-    await SearchHistory.create({
+    // Save only the selected product to DetectionResult
+    // Re-detect flagged allergens for summary (defensive)
+    let allergiesObj = {};
+    const user = await User.findOne({ email });
+    if (user) {
+      if (user.allergies instanceof Map) allergiesObj = Object.fromEntries(user.allergies);
+      else if (typeof user.allergies === 'object') allergiesObj = user.allergies;
+    }
+    const ingredientText = (product.ingredients || []).join(", ");
+    const flagged = detectAllergensInText(ingredientText, allergiesObj);
+
+    await DetectionResult.create({
+      email,
+      source: 'compare',
       query: product.name.toLowerCase(),
-      results: [product],
-      email: email,
+      inputText: null,
+      products: [{
+        productId: product.productId || product._id || product.code || "",
+        name: product.name,
+        brand: product.brand,
+        ingredients: product.ingredients,
+        flaggedAllergens: flagged
+      }],
+      flaggedSummary: flagged.map(f => ({ ...f, productId: product.productId || product._id || product.code || "" }))
     });
 
     res.json({ success: true });

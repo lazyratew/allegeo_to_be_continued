@@ -11,3 +11,6 @@ pages to create:
 - the model detectionresults is storing ALL the search results, instead of only the one used for detection (fix this)
 - add scientific ingredient names to map (synonms)
 - add hazelnuts to the list of allergens. 
+
+problems: (not unable to fix)
+- redirect users who already have allergies to profile not dashboard

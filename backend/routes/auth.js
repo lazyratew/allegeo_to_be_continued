@@ -16,7 +16,25 @@ router.post('/signup', async (req, res) => {
     await user.save();
 
     console.log('User saved:', user);
-    return res.status(201).json({ message: 'User created' });
+    // Always return hasAllergies (true if any allergy value is not empty and not 'Not Allergic')
+    let hasAllergies = false;
+    let allergiesObj = user.allergies;
+    if (allergiesObj && typeof allergiesObj === 'object' && typeof allergiesObj.entries === 'function') {
+      allergiesObj = Object.fromEntries(allergiesObj.entries());
+    }
+    if (allergiesObj && typeof allergiesObj === 'object') {
+      for (const val of Object.values(allergiesObj)) {
+        if (val && val !== 'Not Allergic') {
+          hasAllergies = true;
+          break;
+        }
+      }
+    }
+    return res.status(201).json({
+      message: 'User created',
+      email: user.email,
+      hasAllergies: hasAllergies
+    });
   } catch (err) {
     console.error('Signup error:', err);
     return res.status(500).json({ error: 'Internal server error' });
@@ -25,6 +43,8 @@ router.post('/signup', async (req, res) => {
 
  //login
 router.post('/login', async (req, res) => {
+  //added for console log 
+  console.log("Login endpoint hit")
   try {
     const { email, password } = req.body;
 
@@ -39,7 +59,7 @@ router.post('/login', async (req, res) => {
 
     if (user.password !== password) {
       return res.status(401).json({ error: 'Incorrect password' });
-    }  
+    }
     //store session
     req.session.userId = user._id;
     req.session.email = user.email;
@@ -50,7 +70,26 @@ router.post('/login', async (req, res) => {
         return res.status(500).json({ error: "Could not save session" });
       }
       console.log('✅ Login successful:', user.email);
-      return res.status(200).json({ message: 'Login successful', email: user.email });
+      // Always return hasAllergies (true if any allergy value is not empty and not 'Not Allergic')
+      let hasAllergies = false;
+      let allergiesObj = user.allergies;
+      if (allergiesObj && typeof allergiesObj === 'object' && typeof allergiesObj.entries === 'function') {
+        allergiesObj = Object.fromEntries(allergiesObj.entries());
+      }
+      if (allergiesObj && typeof allergiesObj === 'object') {
+        for (const val of Object.values(allergiesObj)) {
+          if (val && val !== 'Not Allergic') {
+            hasAllergies = true;
+            break;
+          }
+        }
+      }
+      console.log('User allergies:', allergiesObj, 'Has allergies:', hasAllergies);
+      return res.status(200).json({
+        message: 'Login successful',
+        email: user.email,
+        hasAllergies: hasAllergies
+      });
     });
   } catch (err) {
     console.error('❌ Login error:', err);
@@ -65,7 +104,7 @@ router.post('/logout', (req, res) => {
       console.error(err);
       return res.status(500).json({ error: 'Could not log out' });
     }
-    res.clearCookie('sid'); // default cookie name
+    res.clearCookie('sid'); 
     res.json({ message: 'Logged out' });
   });
 });
