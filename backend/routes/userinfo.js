@@ -3,66 +3,48 @@ const router = express.Router();
 const User = require('../models/user');
 const Feedback = require('../models/feedback');
 
-    
-//to save allergy data apparently
-router.post('/profile', async (req, res) => {
-    try {
-        const { email, allergies } = req.body;
+//to check if user is logged in
+function requireLogin(req, res, next) {
+  if (!req.session.userId) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  next();
+}
 
-        if (!email || !allergies) {
-            return res.status(400).json({ message: 'Email and allergies required' });
-        }
+//post with session
+router.post('/profile', requireLogin, async (req, res) => {
+  try {
+    const { allergies } = req.body;
+    if (!allergies) return res.status(400).json({ message: 'Allergies required' });
 
-        const updatedUser = await User.findOneAndUpdate(
-            { email },
-            { allergies },
-            { new: true, upsert: true }
-        );
+    const updatedUser = await User.findByIdAndUpdate(
+      req.session.userId,
+      { allergies },
+      { new: true }
+    );
 
-        console.log('User saved:', updatedUser);
-        res.status(200).json({ message: 'User saved', user: updatedUser });
-    } catch (err) {
-        console.error('Error saving user:', err);
-        res.status(500).json({ message: 'Internal server error' });
-    }
+    res.status(200).json({ message: 'User saved', user: updatedUser });
+  } catch (err) {
+    console.error('Error saving user:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
-// using GET to get user allergy profile
-router.get('/profile', async (req, res) => {
-    const { email } = req.query;
-    if (!email) return res.status(400).json({ error: 'Email required' });
-
-    try {
-        const user = await User.findOne({ email });
-        if (!user) return res.status(404).json({ error: 'User not found' });
-
-        res.json({ allergies: user.allergies || {} });
-    } catch (err) {
-        console.error('Error fetching profile:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
+// GET /profile using session
+router.get('/profile', requireLogin, async (req, res) => {
+  try {
+    const user = await User.findById(req.session.userId);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.status(200).json({ 
+      allergies: user.allergies || {}, 
+      email: user.email, 
+      username: user.username 
+    });
+  } catch (err) {
+    console.error('Error fetching profile:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
 });
-
-//use PUT to update allergy profile
-router.put('/profile', async (req, res) => {
-    const { email, allergies } = req.body;
-    if (!email || !allergies) return res.status(400).json({ error: 'Email and allergies required' });
-
-    try {
-        const user = await User.findOneAndUpdate(
-            { email },
-            { allergies },
-            { new: true }
-        );
-        if (!user) return res.status(404).json({ error: 'User not found' });
-
-        res.json({ message: 'Allergy profile updated' });
-    } catch (err) {
-        console.error('Error updating profile:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
 
 //for user feedback.html file
 router.post('/feedback', async (req, res) => {
@@ -79,23 +61,6 @@ router.post('/feedback', async (req, res) => {
     } catch (err) {
         console.error('Feedback error:', err);
         res.status(500).json({ error: 'Something went wrong' });
-    }
-});
-
-
-// GET allergy profile for a user
-router.get('/profile', async (req, res) => {
-    try {
-        const email = req.query.email;
-        if (!email) return res.status(400).json({ error: 'Email required' });
-
-        const user = await User.findOne({ email });
-        if (!user) return res.status(404).json({ error: 'User not found' });
-
-        res.status(200).json({ allergies: user.allergies || {} });
-    } catch (err) {
-        console.error('Error fetching profile:', err);
-        res.status(500).json({ error: 'Internal server error' });
     }
 });
 

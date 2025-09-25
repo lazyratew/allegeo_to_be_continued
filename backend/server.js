@@ -1,27 +1,48 @@
-// Load environment variables
-require('dotenv').config();
 const path = require('path');
+require('dotenv').config();
 
-// Import required packages
+console.log("MONGO_URI:", process.env.MONGO_URI);
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const session = require('express-session');
+const MongoStore = require('connect-mongo'); //looks weird
 const authRouter = require('./routes/auth');  //file created for user credentials
 const userinfoRouter = require('./routes/userinfo'); //file created for user information
 const scanRouter = require('./routes/scan'); //for the scan_page.html file
 const productRoutes = require('./routes/products');
-
-// Initialize Express app
 const app = express();
+
+//for testing purposes delete later
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
+app.use(cors({
+  origin: ['https://allegeo.netlify.app', 'http://localhost:3000'],
+  credentials: true
+}));
+
+app.set('trust proxy', 1);  //added afer cookie sessions err 
+app.use(session({
+  name: 'sid',
+  secret: process.env.SESSION_SECRET, 
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,  
+    collectionName: 'sessions',       
+    ttl: 10 * 24 * 60 * 60  //10 days           
+  }),
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',   
+    sameSite: 'none',     // required for Netlify <-> Render cross-domain
+    maxAge: 24 * 60 * 60 * 1000 // 1 day
+  },
+}));
 
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors({
-  origin: 'https://allegeo.netlify.app', //front-end deployed with netlify, through github
-  methods: ["GET", "POST", "PUT", "DELETE"], 
-  credentials: true
-}));
-app.use(express.json()); // for parsing application/json
+app.use(express.json()); 
 app.use('/api/auth', authRouter);
 app.use('/api/user', userinfoRouter);
 app.use('/api/scan', scanRouter);
@@ -46,9 +67,6 @@ mongoose.connection.on('disconnected', () => {
   console.log('Mongoose default connection is disconnected');
 });
 
-// Auth routes
-app.use('/api/auth', authRouter);
-
 // Root route
 app.get('/', (req, res) => {
   res.send('API is running...');
@@ -57,5 +75,10 @@ app.get('/', (req, res) => {
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
+  console.log(`🚀 Server is running on`);
+});
+
+//this is for testing on localhost
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });

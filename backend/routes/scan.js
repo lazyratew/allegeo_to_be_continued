@@ -57,23 +57,24 @@ router.post('/analyze-text', async (req, res) => {
     const { text, email } = req.body;
     if (!text) return res.status(400).json({ success: false, message: 'text required' });
 
-    // Save raw scan text if you want (optional)
-    await Scan.create({
-      email: email || 'anonymous',
-      scannedText: text
-    });
-
-    // Load user allergies
+    // Get logged-in user from session
+    const userId = req.session.userId;
     let allergiesObj = {};
-    if (email) {
-      const user = await User.findOne({ email: email.toLowerCase() });
+    let userEmail = 'anonymous';
+
+    if (userId) {
+      const user = await User.findById(userId);
       if (user) {
+        userEmail = user.email;
         if (user.allergies instanceof Map) allergiesObj = Object.fromEntries(user.allergies);
         else if (typeof user.allergies === 'object') allergiesObj = user.allergies;
       }
     }
 
-    // use same detectAllergensInText() function
+    await Scan.create({
+      email: userEmail,
+      scannedText: text
+    });
     const flagged = detectAllergensInText(text, allergiesObj);
 
     await DetectionResult.create({
@@ -91,11 +92,22 @@ router.post('/analyze-text', async (req, res) => {
   }
 });
 
-
 router.post('/analyze-image', async (req, res) => {
   try {
     const { imageBase64, email } = req.body;
     if (!imageBase64) return res.status(400).json({ success: false, message: 'imageBase64 required' });
+
+    const userId = req.session.userId;
+    let userEmail = 'anonymous';
+
+    if (userId) {
+      const user = await User.findById(userId);
+      if (user) {
+        userEmail = user.email;
+        if (user.allergies instanceof Map) allergiesObj = Object.fromEntries(user.allergies);
+        else if (typeof user.allergies === 'object') allergiesObj = user.allergies;
+      }
+    }
 
     // Call OCR.Space
     const response = await axios.post(
@@ -110,29 +122,14 @@ router.post('/analyze-image', async (req, res) => {
 
     const parsedResult = response.data?.ParsedResults?.[0]?.ParsedText || "";
 
-    // Save raw scan (TTL still set on Scan model if you want)
     await Scan.create({
-      email: email || "anonymous",
+      email: userEmail,
       scannedText: parsedResult,
     });
-
-    // Load user allergies (if email provided)
-    let allergiesObj = {};
-    if (email) {
-      const user = await User.findOne({ email: email.toLowerCase() });
-      if (user) {
-        // user.allergies might be a Map or plain object
-        if (user.allergies instanceof Map) allergiesObj = Object.fromEntries(user.allergies);
-        else if (typeof user.allergies === 'object') allergiesObj = user.allergies;
-      }
-    }
-
-    // Detect allergens in OCR text
     const flagged = detectAllergensInText(parsedResult, allergiesObj);
 
-    // Save detection result (single record for this scan)
     await DetectionResult.create({
-      email: email || "anonymous",
+      email: userEmail,
       source: 'scan',
       inputText: parsedResult,
       products: [], // none for OCR

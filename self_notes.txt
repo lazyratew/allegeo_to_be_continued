@@ -1,19 +1,16 @@
-- add compare page 
-- add logo
-- add constraints for password.
-- add main logic, take detected text compare it against the allergens on the user's profile. Show the user their allergy results.
-- make a new page to show the DETECTED allergies. (results.html) [make good color coded results based on seriousness], 
-- work on the compare page (add a database, retrieve data from it)
-- add better images (make new links on dashboard.html, profile.html)
-- REDESIGN THE ENTIRE DATABASE
-- create help page. 
+- add clearer logout logo
+- add constraints for password. 
+- add better images (make new links on dashboard.html, profile.html) 
 - add scan shortcut from dashboard
+- test compare.html and OCR for the detection. 
 
 pages to create:
--help page
--compare page
 -results page
 
 -OCR cannot be used because the file is too large to analyze
 - the model detectionresults is storing ALL the search results, instead of only the one used for detection (fix this)
 - add scientific ingredient names to map (synonms)
+- add hazelnuts to the list of allergens. 
+
+problems: (not unable to fix)
+- redirect users who already have allergies to profile not dashboard
