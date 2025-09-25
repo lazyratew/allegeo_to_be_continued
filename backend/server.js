@@ -17,7 +17,7 @@ const app = express();
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.use(cors({
-  origin: 'https://allegeo.netlify.app', 
+  origin: ['https://allegeo.netlify.app', 'http://localhost:3000'],
   credentials: true
 }));
 
