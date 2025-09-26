@@ -1,0 +1,109 @@
+/* Styles specific to contact.html */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to bottom right, #fffdf5, #fdf7e6);
+    color: #5e0818;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.modern-nav {
+    background: rgba(212, 175, 55, 0.92);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 2px 12px rgba(94, 8, 24, 0.07);
+    height: 70px;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom-left-radius: 1.2rem;
+    border-bottom-right-radius: 1.2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1100;
+    overflow: hidden;
+}
+
+.modern-nav .allegeo-logo {
+    height: 70px;
+    width: auto;
+    display: block;
+    margin-right: auto;
+}
+
+.main {
+    flex: 1;
+    max-width: 500px;
+    margin: 2.5rem auto 0 auto;
+    background: #fff;
+    border-radius: 1.2rem;
+    box-shadow: 0 2px 12px rgba(212, 175, 55, 0.08);
+    padding: 2rem 1.5rem 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.1rem;
+    color: #5e0818;
+    margin-bottom: 1.2rem;
+}
+
+.contact-info {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    color: #7a0c25;
+    text-align: center;
+}
+
+.contact-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.contact-form input,
+.contact-form textarea {
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 0.7rem 1rem;
+    border: 2px solid #c46173;
+    border-radius: 0.5rem;
+    outline: none;
+    resize: none;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    border-color: #5e0818;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.13);
+}
+
+.contact-form button {
+    padding: 0.7rem 1.5rem;
+    background: #5e0818;
+    color: #fff;
+    border: none;
+    border-radius: 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s;
+}
+
+.contact-form button:hover {
+    background: #b07c1e;
+}
+
+.success-message {
+    color: #43a047;
+    font-weight: 600;
+    margin-top: 1.2rem;
+    text-align: center;
+}

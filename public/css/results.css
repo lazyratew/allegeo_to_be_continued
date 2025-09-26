@@ -1,0 +1,245 @@
+/* Extracted styles from results.html - exact copy to preserve appearance */
+:root {
+    --burgundy: #5e0818;
+    --white: #ffffff;
+    --gold: #d4af37;
+    --soft-pink: #fff5f7;
+    --soft-green: #e6f9f0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to bottom right, #fffdf5, #fdf7e6);
+    color: var(--burgundy);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+nav {
+    background: rgba(212, 175, 55, 0.85);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 2px 12px rgba(94, 8, 24, 0.07);
+    height: 64px;
+    padding: 0 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom-left-radius: 1.2rem;
+    border-bottom-right-radius: 1.2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1100;
+    overflow: hidden;
+}
+
+.allegeo-logo {
+    height: 85px;
+    width: auto;
+    display: block;
+}
+
+.logout-logo {
+    height: 50px;
+    width: auto;
+    display: block;
+}
+
+.main {
+    flex: 1;
+    max-width: 700px;
+    margin: 2rem auto 6rem;
+    padding: 1rem;
+}
+
+h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1.2rem;
+    text-align: center;
+}
+
+.results-section {
+    background: #fff;
+    border-radius: 1.2rem;
+    box-shadow: 0 2px 12px rgba(212, 175, 55, 0.08);
+    padding: 1.5rem 1rem;
+    margin-bottom: 2rem;
+}
+
+.flagged-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.flagged-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--soft-pink);
+    border: 2px solid var(--gold);
+    border-radius: 0.8rem;
+    margin-bottom: 1rem;
+    padding: 1rem 1.2rem;
+    box-shadow: 0 1px 6px rgba(94, 8, 24, 0.06);
+    transition: background 0.2s;
+}
+
+.flagged-item.severe {
+    border-color: #e53935;
+    background: #ffeaea;
+}
+
+.flagged-item.moderate {
+    border-color: #ffb300;
+    background: #fffbe7;
+}
+
+.flagged-item.mild {
+    border-color: #43a047;
+    background: var(--soft-green);
+}
+
+.flagged-icon {
+    font-size: 2rem;
+    margin-right: 0.5rem;
+}
+
+.flagged-details {
+    flex: 1;
+}
+
+.flagged-allergen {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.flagged-severity {
+    font-size: 0.98rem;
+    margin-left: 0.5rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 1rem;
+    background: #f9e7e7;
+    color: #e53935;
+    font-weight: 500;
+}
+
+.flagged-item.moderate .flagged-severity {
+    background: #fff3cd;
+    color: #ffb300;
+}
+
+.flagged-item.mild .flagged-severity {
+    background: #e6f9f0;
+    color: #43a047;
+}
+
+.flagged-source {
+    font-size: 0.95rem;
+    color: #888;
+    margin-top: 0.2rem;
+}
+
+.no-flags {
+    text-align: center;
+    color: #43a047;
+    font-size: 1.1rem;
+    margin: 2rem 0;
+}
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: space-around;
+    border-top: 1.5px solid #e7d9b7;
+    box-shadow: 0 -2px 12px rgba(94, 8, 24, 0.06);
+    padding: 0.2rem 0 0.2rem 0;
+    z-index: 1200;
+    border-top-left-radius: 1.2rem;
+    border-top-right-radius: 1.2rem;
+}
+
+.bottom-nav .nav-item {
+    flex: 1;
+    text-align: center;
+    color: #5e0818;
+    text-decoration: none;
+    font-size: 1.05rem;
+    padding: 0.7rem 0 0.3rem 0;
+    border-radius: 1.2rem;
+    margin: 0 0.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+    position: relative;
+}
+
+.bottom-nav .nav-item .icon {
+    display: block;
+    font-size: 1.45rem;
+    margin-bottom: 0.1rem;
+    transition: color 0.18s;
+}
+
+.bottom-nav .nav-item:hover {
+    background: rgba(212, 175, 55, 0.13);
+    color: #7a0c25;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.08);
+}
+
+.bottom-nav .nav-item.active .icon,
+.bottom-nav .nav-item:hover .icon {
+    color: #d4af37;
+}
+
+.bottom-nav .nav-item .nav-label {
+    font-size: 0.92rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+
+@media (max-width: 600px) {
+    nav {
+        height: 56px;
+        padding: 0 0.5rem;
+    }
+
+    .allegeo-logo {
+        height: 60px;
+    }
+
+    .logout-logo {
+        height: 36px;
+    }
+
+    .main {
+        padding: 0.5rem;
+    }
+
+    .results-section {
+        padding: 1rem 0.2rem;
+    }
+
+    .bottom-nav {
+        padding: 0.1rem 0 0.1rem 0;
+    }
+
+    .bottom-nav .nav-item {
+        font-size: 0.98rem;
+        padding: 0.5rem 0 0.1rem 0;
+    }
+
+    .bottom-nav .nav-item .icon {
+        font-size: 1.2rem;
+    }
+}
