@@ -240,11 +240,11 @@
     </div>
   </div>
   <div class="bottom-nav">
-    <a href="profile.html" class="nav-item" title="Dashboard">
+    <a href="profile.html" class="nav-item" title="Profile">
       <span class="icon">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4.5" fill="#FFD36E" stroke="#5e0818" stroke-width="1.5"/><path d="M4.5 20c0-3.59 3.13-6.5 7-6.5s7 2.91 7 6.5" fill="#B6E2D3" stroke="#5e0818" stroke-width="1.5" stroke-linecap="round"/></svg>
       </span>
-      <span class="nav-label">Dashboard</span>
+      <span class="nav-label">Profile</span>
     </a>
     <a href="compare.html" class="nav-item" title="Compare">
       <span class="icon">
@@ -266,10 +266,19 @@
     </a>
   </div>
   <script>
-    // Example: This should be replaced by real data from scan_page.html and compare.html
-    // You can use localStorage/sessionStorage or fetch from backend as needed
-    const flaggedAllergies = JSON.parse(localStorage.getItem('flaggedAllergies') || '[]');
-    // flaggedAllergies = [{ allergen: 'Peanuts', severity: 'Severe', source: 'Scan' }, ...]
+    // Include helper for pushFlaggedAllergyResult and migration
+    // ...existing code will call migrateLegacyFlaggedKeys() on load
+    (function ensureHelperIncluded() {
+      const s = document.createElement('script');
+      s.src = 'flaggedHelper.js';
+      s.defer = true;
+      document.head.appendChild(s);
+    })();
+
+    // Render 4-day stacked history of flagged allergy results.
+    // Storage shape (localStorage key: 'flaggedAllergyResults'):
+    // [ { timestamp: 123456789, productName: '', allergies: [{allergen,severity,source,productName,matchedIngredient}] }, ... ]
+
     function getSeverityClass(severity) {
       if (!severity) return '';
       const s = severity.toLowerCase();
@@ -278,38 +287,102 @@
       if (s === 'mild') return 'mild';
       return '';
     }
+
+    function formatDate(ts) {
+      const d = new Date(ts);
+      return d.toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    // Normalize legacy keys into the new storage format
+    function normalizeLegacyResults() {
+      // Use migrateLegacyFlaggedKeys if the helper loaded
+      try {
+        if (window.migrateLegacyFlaggedKeys) {
+          window.migrateLegacyFlaggedKeys();
+          return;
+        }
+        // fallback (if helper not yet available)
+        const legacy = JSON.parse(localStorage.getItem('flaggedAllergies') || 'null');
+        const legacyText = localStorage.getItem('flaggedScanText');
+        const legacyProduct = localStorage.getItem('flaggedProductName');
+        if (legacy && Array.isArray(legacy) && legacy.length) {
+          const allergies = legacy.map(f => ({
+            allergen: f.allergen || f.name || '',
+            severity: f.severity || f.level || 'Unknown',
+            source: f.source || 'Scan',
+            productName: f.productName || legacyProduct || '',
+            matchedIngredient: f.matchedIngredient || ''
+          }));
+          const results = JSON.parse(localStorage.getItem('flaggedAllergyResults') || '[]');
+          results.push({ timestamp: Date.now(), productName: legacyProduct || '', allergies, inputText: legacyText || '' });
+          localStorage.setItem('flaggedAllergyResults', JSON.stringify(results));
+          localStorage.removeItem('flaggedAllergies');
+          localStorage.removeItem('flaggedScanText');
+          localStorage.removeItem('flaggedProductName');
+        }
+      } catch (e) {
+        console.warn('normalizeLegacyResults error', e);
+      }
+    }
+
+    function pruneOldResults(results) {
+      const now = Date.now();
+      const maxAge = 4 * 24 * 60 * 60 * 1000; // 4 days
+      return results.filter(r => r.timestamp && (now - r.timestamp) <= maxAge);
+    }
+
     function renderFlaggedAllergies() {
       const list = document.getElementById('flaggedList');
       const noFlags = document.getElementById('noFlags');
       list.innerHTML = '';
-      if (!flaggedAllergies.length) {
+
+      normalizeLegacyResults();
+
+      let allResults = JSON.parse(localStorage.getItem('flaggedAllergyResults') || '[]');
+      // prune and persist
+      allResults = pruneOldResults(allResults);
+      localStorage.setItem('flaggedAllergyResults', JSON.stringify(allResults));
+
+      // newest first
+      allResults.sort((a, b) => b.timestamp - a.timestamp);
+
+      if (!allResults.length) {
         noFlags.style.display = '';
         return;
       }
       noFlags.style.display = 'none';
-      // Get product name from first flagged item or from localStorage
-      const productName = (flaggedAllergies[0] && flaggedAllergies[0].productName) || localStorage.getItem('flaggedProductName') || '';
-      // Show product name at the top if available
-      if (productName) {
-        const prodDiv = document.createElement('div');
-        prodDiv.style = 'font-size:1.1rem;font-weight:600;margin-bottom:1.1rem;text-align:center;color:#5e0818;';
-        prodDiv.innerHTML = `Product: <span style="color:#b07c1e;">${productName}</span>`;
-        list.appendChild(prodDiv);
-      }
-      flaggedAllergies.forEach(item => {
-        const li = document.createElement('li');
-        li.className = 'flagged-item ' + getSeverityClass(item.severity);
-        li.innerHTML = `
-          <span class="flagged-icon">⚠️</span>
-          <div class="flagged-details">
-            <span class="flagged-allergen">${item.allergen}</span>
-            <span class="flagged-severity">${item.severity}</span>
-            <div class="flagged-source">Source: ${item.source || 'Unknown'}${item.productName ? ` | Product: <span style='color:#b07c1e;'>${item.productName}</span>` : ''}</div>
-          </div>
-        `;
-        list.appendChild(li);
+
+      allResults.forEach(result => {
+        // Meta row with date and optional product name
+        const metaRow = document.createElement('div');
+        metaRow.style = 'display:flex;justify-content:space-between;align-items:center;margin:0.6rem 0;font-size:0.95rem;color:#5e0818;';
+        const left = document.createElement('div');
+        if (result.productName) left.innerHTML = `<strong style="color:#b07c1e;">${result.productName}</strong>`;
+        const right = document.createElement('div');
+        right.style = 'color:#666;font-size:0.9rem;';
+        right.textContent = formatDate(result.timestamp);
+        metaRow.appendChild(left);
+        metaRow.appendChild(right);
+        list.appendChild(metaRow);
+
+        // Allergies list for this result
+        (result.allergies || []).forEach(item => {
+          const li = document.createElement('li');
+          li.className = 'flagged-item ' + getSeverityClass(item.severity);
+          li.innerHTML = `
+            <span class="flagged-icon">⚠️</span>
+            <div class="flagged-details">
+              <span class="flagged-allergen">${item.allergen}</span>
+              <span class="flagged-severity">${item.severity}</span>
+              <div class="flagged-source">Source: ${item.source || 'Unknown'}${item.productName ? ` | Product: <span style='color:#b07c1e;'>${item.productName}</span>` : ''}</div>
+            </div>
+          `;
+          list.appendChild(li);
+        });
       });
     }
+
+    // Run on load
     renderFlaggedAllergies();
   </script>
 </body>

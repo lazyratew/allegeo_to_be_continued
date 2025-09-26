@@ -246,6 +246,10 @@
   </div>
 
   <script>
+    // ensure helper is loaded for pushing grouped results
+    (function(){
+      const s = document.createElement('script'); s.src = 'flaggedHelper.js'; s.defer = true; document.head.appendChild(s);
+    })();
   </script>
 
   <div class="bottom-nav">
@@ -314,8 +318,20 @@
               matchedIngredient: f.matchedIngredient || '',
               inputText: data.text || ''
             }));
-            localStorage.setItem('flaggedAllergies', JSON.stringify(flaggedToStore));
-            localStorage.setItem('flaggedScanText', data.text || '');
+            // Use helper to push grouped result and then go to results page
+            const flaggedArr = (Array.isArray(data.flagged) ? data.flagged : []).map(f => ({
+              allergen: f.allergen,
+              severity: f.severity,
+              source: 'Scan',
+              matchedIngredient: f.matchedIngredient || ''
+            }));
+            if (window.pushFlaggedAllergyResult) {
+              window.pushFlaggedAllergyResult({ productName: '', allergies: flaggedArr, inputText: data.text || '', source: 'scan' });
+            } else {
+              // fallback to legacy keys
+              localStorage.setItem('flaggedAllergies', JSON.stringify(flaggedArr));
+              localStorage.setItem('flaggedScanText', data.text || '');
+            }
             window.location.href = 'results.html';
           } else {
             document.getElementById('ocrResult').textContent = 'Error processing image.';
@@ -348,8 +364,19 @@
             matchedIngredient: f.matchedIngredient || '',
             inputText: data.text || input
           }));
-          localStorage.setItem('flaggedAllergies', JSON.stringify(flaggedToStore));
-          localStorage.setItem('flaggedScanText', data.text || input);
+          // Use helper to push grouped result and then redirect to results page
+          const flaggedArr = (Array.isArray(data.flagged) ? data.flagged : []).map(f => ({
+            allergen: f.allergen,
+            severity: f.severity,
+            source: 'Scan',
+            matchedIngredient: f.matchedIngredient || ''
+          }));
+          if (window.pushFlaggedAllergyResult) {
+            window.pushFlaggedAllergyResult({ productName: '', allergies: flaggedArr, inputText: data.text || input, source: 'scan' });
+          } else {
+            localStorage.setItem('flaggedAllergies', JSON.stringify(flaggedArr));
+            localStorage.setItem('flaggedScanText', data.text || input);
+          }
           window.location.href = 'results.html';
         } else {
           document.getElementById('manualResult').textContent = 'Error analyzing input.';

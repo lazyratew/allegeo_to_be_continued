@@ -308,6 +308,10 @@
       <img src="images/logout_shiny.png" alt="Logout" class="logout-logo">
     </a>
   </nav>
+  <script>
+    // ensure helper loaded for grouped results
+    (function(){ const s = document.createElement('script'); s.src = 'flaggedHelper.js'; s.defer = true; document.head.appendChild(s); })();
+  </script>
 
   <div class="main">
     <h1>Compare Food Items</h1>
@@ -467,15 +471,20 @@
           credentials: "include",
           body: JSON.stringify({ product: selectedProduct })
         });
-        // Store flagged allergens for results page, include product name
-        const flaggedToStore = flaggedAllergens.map(f => ({
+        // Push grouped result via helper, then redirect to results page
+        const flaggedArr = flaggedAllergens.map(f => ({
           allergen: f.allergen,
           severity: f.severity,
           source: 'Compare',
           productName: selectedProduct.name || ''
         }));
-        localStorage.setItem('flaggedAllergies', JSON.stringify(flaggedToStore));
-        localStorage.setItem('flaggedProductName', selectedProduct.name || '');
+        if (window.pushFlaggedAllergyResult) {
+          window.pushFlaggedAllergyResult({ productName: selectedProduct.name || '', allergies: flaggedArr, source: 'compare' });
+        } else {
+          // fallback to legacy keys
+          localStorage.setItem('flaggedAllergies', JSON.stringify(flaggedArr));
+          localStorage.setItem('flaggedProductName', selectedProduct.name || '');
+        }
         window.location.href = 'results.html';
       } catch (err) {
         console.error("Failed to store selected product:", err);
