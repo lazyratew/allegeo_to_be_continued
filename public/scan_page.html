@@ -215,6 +215,9 @@
     <div class="nav-title">
       <img src="images/allegeo_shiny.png" alt="Allegeo Logo" class="allegeo-logo">
     </div>
+    <a href="contact.html" class="nav-icon" title="Contact Us">
+      <img src="images/contact_icon.png" alt="Contact Us" class="contact-logo" style="height:32px;width:auto;margin-right:10px;vertical-align:middle;">
+    </a>
     <a href="login.html" class="nav-icon" title="Logout" onclick="localStorage.removeItem('allergies'); sessionStorage.removeItem('allergies');">
       <img src="images/logout_shiny.png" alt="Logout" class="logout-logo">
     </a>
@@ -303,9 +306,17 @@
         .then(data => {
           if (data.success) {
             document.getElementById('ocrResult').textContent = data.text;
-            if (Array.isArray(data.flagged) && data.flagged.length) {
-              alert('⚠️ Allergens found: ' + data.flagged.map(f => `${f.allergen} (${f.severity})`).join(', '));
-            }
+            // Store flagged allergens for results page
+            const flaggedToStore = (Array.isArray(data.flagged) ? data.flagged : []).map(f => ({
+              allergen: f.allergen,
+              severity: f.severity,
+              source: 'Scan',
+              matchedIngredient: f.matchedIngredient || '',
+              inputText: data.text || ''
+            }));
+            localStorage.setItem('flaggedAllergies', JSON.stringify(flaggedToStore));
+            localStorage.setItem('flaggedScanText', data.text || '');
+            window.location.href = 'results.html';
           } else {
             document.getElementById('ocrResult').textContent = 'Error processing image.';
           }
@@ -329,11 +340,17 @@
         const data = await res.json();
         if (res.ok) {
           document.getElementById('manualResult').textContent = data.text || input;
-          if (Array.isArray(data.flagged) && data.flagged.length) {
-            alert('⚠️ Allergens found: ' + data.flagged.map(f => `${f.allergen} (${f.severity})`).join(', '));
-          } else {
-            alert('No allergens found in the entered text.');
-          }
+          // Store flagged allergens for results page
+          const flaggedToStore = (Array.isArray(data.flagged) ? data.flagged : []).map(f => ({
+            allergen: f.allergen,
+            severity: f.severity,
+            source: 'Scan',
+            matchedIngredient: f.matchedIngredient || '',
+            inputText: data.text || input
+          }));
+          localStorage.setItem('flaggedAllergies', JSON.stringify(flaggedToStore));
+          localStorage.setItem('flaggedScanText', data.text || input);
+          window.location.href = 'results.html';
         } else {
           document.getElementById('manualResult').textContent = 'Error analyzing input.';
         }

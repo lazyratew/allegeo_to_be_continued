@@ -7,6 +7,49 @@
   <title>Sign Up - Allegeo</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <style>
+    .modern-nav {
+      background: rgba(212, 175, 55, 0.92);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 2px 12px rgba(94, 8, 24, 0.07);
+      height: 70px;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom-left-radius: 1.2rem;
+      border-bottom-right-radius: 1.2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1100;
+      overflow: hidden;
+    }
+
+    .modern-nav .allegeo-logo {
+      height: 70px;
+      width: auto;
+      display: block;
+      margin-right: auto;
+    }
+
+    .modern-nav .contact-link {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #5e0818;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      padding: 0.5rem 1.2rem;
+      border-radius: 2rem;
+      background: rgba(255, 255, 255, 0.7);
+      transition: background 0.18s, color 0.18s;
+      margin-left: auto;
+    }
+
+    .modern-nav .contact-link:hover {
+      background: #FFD36E;
+      color: #7a0c25;
+    }
+
     :root {
       --burgundy: #5e0818;
       --white: #ffffff;
@@ -28,42 +71,10 @@
       flex-direction: column;
     }
 
-    nav {
-      background-color: var(--gold);
-      padding: 1rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 10;
-    }
-
-    .nav-title {
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: var(--burgundy);
-    }
-
-    .nav-link {
-      font-family: 'Poppins', sans-serif;
-      font-size: 1rem;
-      font-weight: 500;
-      text-decoration: none;
-      color: var(--burgundy);
-      transition: color 0.2s ease;
-    }
-
-    .nav-link:hover {
-      color: var(--white);
-    }
-
-    .nav-underline {
-      height: 70px;
-      background-color: var(--burgundy);
-      width: 100%;
+    .allegeo-logo {
+      height: 85px;
+      width: auto;
+      display: block;
     }
 
     main {
@@ -167,9 +178,9 @@
 <body>
 
   <!-- Navigation Bar -->
-  <nav>
-    <div class="nav-title">Allegeo</div>
-    <a href="#" class="nav-link">Help</a>
+  <nav class="modern-nav">
+    <img src="images/allegeo_shiny.png" alt="Allegeo Logo" class="allegeo-logo">
+    <a href="contact.html" class="contact-link">Contact Us</a>
   </nav>
   <div class="nav-underline"></div>
 
@@ -201,8 +212,6 @@
   <script>
     // Wait until the whole page is loaded
     window.addEventListener('DOMContentLoaded', () => {
-      console.log("JS script is running");
-
       const form = document.getElementById('signupForm');
       if (!form) {
         console.error("err Form not found");
@@ -210,20 +219,44 @@
       }
 
       form.addEventListener('submit', async (e) => {
+        // Phone: must be exactly 10 digits
+        if (!/^\d{10}$/.test(phone)) {
+          alert("Phone number must be exactly 10 digits.");
+          return;
+        }
         e.preventDefault();
         console.log("Submit clicked");
 
         const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com";
-        const username = document.getElementById('username').value;
-        const email = document.getElementById('email').value;
-        const phone = document.getElementById('number').value;
+        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('number').value.trim();
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
+
+        // Username: min 3 chars, only letters, numbers, underscores
+        if (!/^[A-Za-z0-9_]{3,}$/.test(username)) {
+          alert("Username must be at least 3 characters and contain only letters, numbers, or underscores.");
+          return;
+        }
+
+        // Email: must be a valid Gmail address
+        if (!/^([a-zA-Z0-9_.+-]+)@gmail\.com$/.test(email)) {
+          alert("Please enter a valid Gmail address (example@gmail.com).");
+          return;
+        }
+
+        // Password: min 8 chars, at least 1 uppercase, 1 lowercase, 1 number, 1 special char
+        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(password)) {
+          alert("Password must be at least 8 characters and include uppercase, lowercase, number, and special character.");
+          return;
+        }
 
         if (password !== confirmPassword) {
           alert("Passwords don't match.");
           return;
         }
+
         try {
           const res = await fetch(`${BACKEND_URL}/api/auth/signup`, {
             method: 'POST',
