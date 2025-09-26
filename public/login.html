@@ -7,6 +7,49 @@
   <title>Login - Allegeo</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <style>
+    .modern-nav {
+      background: rgba(212, 175, 55, 0.92);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 2px 12px rgba(94, 8, 24, 0.07);
+      height: 70px;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom-left-radius: 1.2rem;
+      border-bottom-right-radius: 1.2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1100;
+      overflow: hidden;
+    }
+
+    .modern-nav .allegeo-logo {
+      height: 70px;
+      width: auto;
+      display: block;
+      margin-right: auto;
+    }
+
+    .modern-nav .contact-link {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #5e0818;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      padding: 0.5rem 1.2rem;
+      border-radius: 2rem;
+      background: rgba(255, 255, 255, 0.7);
+      transition: background 0.18s, color 0.18s;
+      margin-left: auto;
+    }
+
+    .modern-nav .contact-link:hover {
+      background: #FFD36E;
+      color: #7a0c25;
+    }
+
     :root {
       --burgundy: #5e0818;
       --white: #ffffff;
@@ -26,45 +69,6 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-    }
-
-    /* Navigation Bar */
-    nav {
-      background-color: var(--gold);
-      padding: 1rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 10;
-    }
-
-    .nav-title {
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: var(--burgundy);
-    }
-
-    .nav-link {
-      font-family: 'Poppins', sans-serif;
-      font-size: 1rem;
-      font-weight: 500;
-      text-decoration: none;
-      color: var(--burgundy);
-      transition: color 0.2s ease;
-    }
-
-    .nav-link:hover {
-      color: var(--white);
-    }
-
-    .nav-underline {
-      height: 70px;
-      background-color: var(--burgundy);
-      width: 100%;
     }
 
     /* Main Section */
@@ -173,12 +177,11 @@
 
 <body>
 
-  <!-- Navigation Bar -->
-  <nav>
-    <div class="nav-title">Allegeo</div>
-    <a href="#" class="nav-link">Help</a>
+  <!-- Modern Top Navigation Bar -->
+  <nav class="modern-nav">
+    <img src="images/allegeo_shiny.png" alt="Allegeo Logo" class="allegeo-logo">
+    <a href="contact.html" class="contact-link">Contact Us</a>
   </nav>
-  <div class="nav-underline"></div>
 
   <!-- Login Form Section -->
   <main>

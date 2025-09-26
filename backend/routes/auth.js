@@ -9,31 +9,47 @@ router.post('/signup', async (req, res) => {
     if (!email || !password || !username || !phone) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
-    const exists = await User.findOne({ email });
-    if (exists) return res.status(409).json({ error: 'User already exists' });
+  // Check for duplicate email
+  const exists = await User.findOne({ email });
+  if (exists) return res.status(409).json({ error: 'User already exists' });
 
-    const user = new User({ username, email, phone, password });
-    await user.save();
+  // Check for duplicate username (case-insensitive)
+  const usernameExists = await User.findOne({ username: { $regex: `^${username}$`, $options: 'i' } });
+  if (usernameExists) return res.status(409).json({ error: 'Username already taken' });
 
-    console.log('User saved:', user);
-    // Always return hasAllergies (true if any allergy value is not empty and not 'Not Allergic')
-    let hasAllergies = false;
-    let allergiesObj = user.allergies;
-    if (allergiesObj && typeof allergiesObj === 'object' && typeof allergiesObj.entries === 'function') {
-      allergiesObj = Object.fromEntries(allergiesObj.entries());
-    }
-    if (allergiesObj && typeof allergiesObj === 'object') {
-      for (const val of Object.values(allergiesObj)) {
-        if (val && val !== 'Not Allergic') {
-          hasAllergies = true;
-          break;
+  // Store username in lowercase for consistency
+  const user = new User({ username: username.toLowerCase(), email, phone, password });
+  await user.save();
+
+    // Set session so user stays logged in after signup
+    req.session.userId = user._id;
+    req.session.email = user.email;
+
+    req.session.save(err => {
+      if (err) {
+        console.error("❌ Session save error after signup:", err);
+        return res.status(500).json({ error: "Could not save session" });
+      }
+      console.log('User saved and session set:', user);
+      // Always return hasAllergies (true if any allergy value is not empty and not 'Not Allergic')
+      let hasAllergies = false;
+      let allergiesObj = user.allergies;
+      if (allergiesObj && typeof allergiesObj === 'object' && typeof allergiesObj.entries === 'function') {
+        allergiesObj = Object.fromEntries(allergiesObj.entries());
+      }
+      if (allergiesObj && typeof allergiesObj === 'object') {
+        for (const val of Object.values(allergiesObj)) {
+          if (val && val !== 'Not Allergic') {
+            hasAllergies = true;
+            break;
+          }
         }
       }
-    }
-    return res.status(201).json({
-      message: 'User created',
-      email: user.email,
-      hasAllergies: hasAllergies
+      return res.status(201).json({
+        message: 'User created',
+        email: user.email,
+        hasAllergies: hasAllergies
+      });
     });
   } catch (err) {
     console.error('Signup error:', err);
