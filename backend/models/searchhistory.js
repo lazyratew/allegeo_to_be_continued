@@ -11,7 +11,7 @@ const searchHistorySchema = new mongoose.Schema({
   },
   results: [
     {
-      productId: String,  // the OpenFoodFacts product id 
+      productId: String,  //OpenFoodFacts product id 
       name: String,       // product name
       brand: String,     
       ingredients: [String], // ingredient list returned
@@ -20,7 +20,7 @@ const searchHistorySchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: "4d", // optional TTL: auto-delete after 4 days
+    expires: "5d", //auto-delete after 5 days
   },
 });
 

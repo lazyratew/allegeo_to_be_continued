@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const Feedback = require('../models/feedback');
+const { getUserAllergiesById } = require('../utils/userAllergyHelp');
 
 //to check if user is logged in
 function requireLogin(req, res, next) {
@@ -33,61 +34,57 @@ router.post('/profile', requireLogin, async (req, res) => {
 // GET /profile using session
 router.get('/profile', requireLogin, async (req, res) => {
   try {
-    const user = await User.findById(req.session.userId);
-    if (!user) return res.status(404).json({ error: 'User not found' });
-    res.status(200).json({ 
-      allergies: user.allergies || {}, 
-      email: user.email, 
-      username: user.username 
-    });
+    const userAllergies = await getUserAllergiesById(req.session.userId); 
+    if (!userAllergies) return res.status(404).json({ error: 'User not found' });
+    res.status(200).json({ allergies: userAllergies });
   } catch (err) {
-    console.error('Error fetching profile:', err);
+    console.error('Error fetching user profile:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
 //for user feedback.html file
 router.post('/feedback', async (req, res) => {
-    try {
-        const { email, message } = req.body;
-        if (!message) {
-            return res.status(400).json({ error: 'Message is required' });
-        }
-
-        const feedback = new Feedback({ email, message });
-        await feedback.save();
-
-        res.status(201).json({ message: 'Feedback received' });
-    } catch (err) {
-        console.error('Feedback error:', err);
-        res.status(500).json({ error: 'Something went wrong' });
+  try {
+    const { email, message } = req.body;
+    if (!message) {
+      return res.status(400).json({ error: 'Message is required' });
     }
+
+    const feedback = new Feedback({ email, message });
+    await feedback.save();
+
+    res.status(201).json({ message: 'Feedback received' });
+  } catch (err) {
+    console.error('Feedback error:', err);
+    res.status(500).json({ error: 'Something went wrong' });
+  }
 });
 
 // for dashboard allergies
 router.post('/allergies', async (req, res) => {
-    try {
-        const { allergies } = req.body;
-        if (!allergies || typeof allergies !== 'object') {
-            return res.status(400).json({ error: 'Invalid data format' });
-        }
-
-        // TODO: Replace with actual logged-in user info later
-        const userEmail = "test@example.com"; // temporary
-
-        const user = await User.findOneAndUpdate(
-            { email: userEmail },
-            { allergies },
-            { new: true, upsert: false }
-        );
-
-        if (!user) return res.status(404).json({ error: 'User not found' });
-
-        res.status(200).json({ message: 'Allergies updated' });
-    } catch (err) {
-        console.error('Update allergy error:', err);
-        res.status(500).json({ error: 'Failed to save allergy profile' });
+  try {
+    const { allergies } = req.body;
+    if (!allergies || typeof allergies !== 'object') {
+      return res.status(400).json({ error: 'Invalid data format' });
     }
+
+    // TODO: Replace with actual logged-in user info later
+    const userEmail = "test@example.com"; // temporary
+
+    const user = await User.findOneAndUpdate(
+      { email: userEmail },
+      { allergies },
+      { new: true, upsert: false }
+    );
+
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    res.status(200).json({ message: 'Allergies updated' });
+  } catch (err) {
+    console.error('Update allergy error:', err);
+    res.status(500).json({ error: 'Failed to save allergy profile' });
+  }
 });
 
 module.exports = router;

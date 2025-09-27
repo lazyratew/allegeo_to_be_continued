@@ -2,53 +2,17 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
-const fetch = global.fetch;
+const fetch = global.fetch; //I dont think this is needed 
 const SearchHistory = require('../models/searchhistory');
 const User = require('../models/user');
 const DetectionResult = require('../models/detectionresult');
-
-const SYNONYMS = { //add scientific name 
-  "tomatoes": ["tomato", "tomato paste", "tomato sauce"],
-  "peanuts": ["peanut", "groundnut", "arachis"],
-  "milk": ["milk", "milk powder", "milk solids", "casein", "lactose"],
-  "egg": ["egg", "egg yolk", "egg white", "albumen"],
-  "wheat": ["wheat", "gluten", "spelt", "semolina"],
-  "soy": ["soy", "soya", "soybean", "soya protein"],
-  "fish": ["fish", "salmon", "cod", "tuna"],
-  "shellfish": ["shrimp", "prawn", "crab", "lobster", "shellfish"],
-  "strawberries": ["strawberry", "strawberries"],
-};
-
-function escapeRegExp(s) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-function detectAllergensInText(text, allergiesObj = {}) {
-  const flagged = [];
-  if (!text) return flagged;
-  const normalized = text.toLowerCase();
-
-  for (const [allergen, severity] of Object.entries(allergiesObj)) {
-    const key = String(allergen).toLowerCase();
-    const terms = new Set([key]);
-    if (SYNONYMS[key]) {
-      SYNONYMS[key].forEach(syn => terms.add(syn.toLowerCase()));
-    }
-
-    for (const term of terms) {
-      const rx = new RegExp('\\b' + escapeRegExp(term) + '\\b', 'i');
-      if (rx.test(normalized) || normalized.includes(term)) {
-        flagged.push({ allergen, severity, matchedIngredient: term });
-        break; // avoid duplicate flags for same allergen
-      }
-    }
-  }
-  return flagged;
-}
+const { detectAllergensInText } = require('../utils/detectionLogic');
+const { getUserAllergiesById } = require('../utils/userAllergyHelp');
 
 router.get('/search', async (req, res) => {
   try {
     const email = req.session?.email;
+    const userId = req.session?.userId;
     if (!email) return res.status(401).json({ error: 'Unauthorized: no session found' });
 
     const query = req.query.q;
@@ -77,13 +41,8 @@ router.get('/search', async (req, res) => {
     });
     const data = response.data || {};
 
-    // Load user's allergies
-    let allergiesObj = {};
-    const user = await User.findOne({ email });
-    if (user) {
-      if (user.allergies instanceof Map) allergiesObj = Object.fromEntries(user.allergies);
-      else if (typeof user.allergies === 'object') allergiesObj = user.allergies;
-    }
+    //loading the user's allergies using the helper file
+    const allergiesObj = await getUserAllergiesById(userId);
 
     // Map API response and detect allergens per product
     const products = (data.products || []).map(p => {
@@ -101,7 +60,19 @@ router.get('/search', async (req, res) => {
       };
     });
 
-    // Do NOT store all products in DetectionResult here. Only store on confirm (see /storeSelected)
+
+    // 3. Save new search results to the database for caching
+    await SearchHistory.create({
+      email,
+      query: qLower,
+      results: products.map(p => ({
+        productId: p.productId,
+        name: p.name,
+        brand: p.brand,
+        ingredients: p.ingredients,
+      }))
+    });
+    
     console.log('🌍 Served from OpenFoodFacts API for', email);
     res.json(products);
 
@@ -111,6 +82,7 @@ router.get('/search', async (req, res) => {
   }
 });
 
+
 router.post('/storeSelected', async (req, res) => {
   try {
     const { product } = req.body;
@@ -118,14 +90,7 @@ router.post('/storeSelected', async (req, res) => {
     if (!email) return res.status(401).json({ error: "Unauthorized: no session found" });
     if (!product) return res.status(400).json({ error: "Product required" });
 
-    // Save only the selected product to DetectionResult
-    // Re-detect flagged allergens for summary (defensive)
-    let allergiesObj = {};
-    const user = await User.findOne({ email });
-    if (user) {
-      if (user.allergies instanceof Map) allergiesObj = Object.fromEntries(user.allergies);
-      else if (typeof user.allergies === 'object') allergiesObj = user.allergies;
-    }
+    const allergiesObj = await getUserAllergiesById(userId);
     const ingredientText = (product.ingredients || []).join(", ");
     const flagged = detectAllergensInText(ingredientText, allergiesObj);
 
@@ -151,5 +116,39 @@ router.post('/storeSelected', async (req, res) => {
   }
 });
 
+
+//receive the detection results from results.html
+router.post('/saveDetection', async (req, res) => {
+  try {
+    const { product, flaggedAllergens } = req.body;
+    const email = req.session?.email;
+    if (!email) return res.status(401).json({ error: "Unauthorized: no session found" });
+    if (!product || !flaggedAllergens) return res.status(400).json({ error: "Product and flagged allergens required" });
+
+    // Save the final detection results to the DetectionResult collection
+    await DetectionResult.create({
+      email,
+      source: 'compare', // or whatever source you want
+      query: product.name.toLowerCase(),
+      inputText: null,
+      products: [{
+        productId: product.productId || product._id || product.code || "",
+        name: product.name,
+        brand: product.brand,
+        ingredients: product.ingredients,
+        flaggedAllergens: flaggedAllergens
+      }],
+      flaggedSummary: flaggedAllergens.map(f => ({
+        ...f,
+        productId: product.productId || product._id || product.code || ""
+      }))
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("❌ Error in /products/saveDetection:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 module.exports = router;

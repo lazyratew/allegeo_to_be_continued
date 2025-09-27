@@ -45,7 +45,6 @@
   <!-- Form Handler -->
 
   <script>
-    // Wait until the whole page is loaded
     window.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('signupForm');
       if (!form) {
@@ -54,11 +53,6 @@
       }
 
       form.addEventListener('submit', async (e) => {
-        // Phone: must be exactly 10 digits
-        if (!/^\d{10}$/.test(phone)) {
-          alert("Phone number must be exactly 10 digits.");
-          return;
-        }
         e.preventDefault();
         console.log("Submit clicked");
 
@@ -68,6 +62,12 @@
         const phone = document.getElementById('number').value.trim();
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
+
+        //constraints for phone
+        if (!/^\d{10}$/.test(phone)) {
+          alert("Phone number must be exactly 10 digits.");
+          return;
+        }
 
         // Username: min 3 chars, only letters, numbers, underscores
         if (!/^[A-Za-z0-9_]{3,}$/.test(username)) {
