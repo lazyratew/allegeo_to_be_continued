@@ -102,8 +102,6 @@
         const response = await fetch(`${BACKEND_URL}/products/getDetectionResults`, {
           credentials: "include"
         });
-        console.log('Response Status:', response.status); //for errr checking
-        console.log('Response OK:', response.ok); //for err checking 
         if (!response.ok) {
           if (response.status === 401) {
             alert("Please log in to view your results.");
