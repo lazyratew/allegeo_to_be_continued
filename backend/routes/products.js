@@ -60,7 +60,7 @@ router.get('/search', async (req, res) => {
     await SearchHistory.create({
       email,
       query: qLower,
-      results: products.map(p => ({
+      Search_results: products.map(p => ({
         productId: p.productId,
         name: p.name,
         brand: p.brand,
