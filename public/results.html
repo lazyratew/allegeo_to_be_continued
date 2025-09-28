@@ -74,8 +74,9 @@
       <span class="nav-label">Feedback</span>
     </a>
   </div>
-  <script src="js/flaggedHelper.js"></script>
+
   <script>
+    const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com"
     function getSeverityClass(severity) {
       if (!severity) return '';
       const s = severity.toLowerCase();
@@ -90,95 +91,72 @@
       return d.toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
     }
 
-    // Normalize legacy keys into the new storage format
-    function normalizeLegacyResults() {
-      // Use migrateLegacyFlaggedKeys if the helper loaded
-      try {
-        if (window.migrateLegacyFlaggedKeys) {
-          window.migrateLegacyFlaggedKeys();
-          return;
-        }
-        // fallback (if helper not yet available)
-        const legacy = JSON.parse(localStorage.getItem('flaggedAllergies') || 'null');
-        const legacyText = localStorage.getItem('flaggedScanText');
-        const legacyProduct = localStorage.getItem('flaggedProductName');
-        if (legacy && Array.isArray(legacy) && legacy.length) {
-          const allergies = legacy.map(f => ({
-            allergen: f.allergen || f.name || '',
-            severity: f.severity || f.level || 'Unknown',
-            source: f.source || 'Scan',
-            productName: f.productName || legacyProduct || '',
-            matchedIngredient: f.matchedIngredient || ''
-          }));
-          const results = JSON.parse(localStorage.getItem('flaggedAllergyResults') || '[]');
-          results.push({ timestamp: Date.now(), productName: legacyProduct || '', allergies, inputText: legacyText || '' });
-          localStorage.setItem('flaggedAllergyResults', JSON.stringify(results));
-          localStorage.removeItem('flaggedAllergies');
-          localStorage.removeItem('flaggedScanText');
-          localStorage.removeItem('flaggedProductName');
-        }
-      } catch (e) {
-        console.warn('normalizeLegacyResults error', e);
-      }
-    }
-
-    function pruneOldResults(results) {
-      const now = Date.now();
-      const maxAge = 4 * 24 * 60 * 60 * 1000; // 4 days
-      return results.filter(r => r.timestamp && (now - r.timestamp) <= maxAge);
-    }
-
-    function renderFlaggedAllergies() {
+    async function renderFlaggedAllergies() {
       const list = document.getElementById('flaggedList');
       const noFlags = document.getElementById('noFlags');
       list.innerHTML = '';
+      noFlags.style.display = 'none'; // Initially hide this message
 
-      normalizeLegacyResults();
-
-      let allResults = JSON.parse(localStorage.getItem('flaggedAllergyResults') || '[]');
-      // prune and persist
-      allResults = pruneOldResults(allResults);
-      localStorage.setItem('flaggedAllergyResults', JSON.stringify(allResults));
-
-      // newest first
-      allResults.sort((a, b) => b.timestamp - a.timestamp);
-
-      if (!allResults.length) {
-        noFlags.style.display = '';
-        return;
-      }
-      noFlags.style.display = 'none';
-
-      allResults.forEach(result => {
-        // Meta row with date and optional product name
-        const metaRow = document.createElement('div');
-        metaRow.style = 'display:flex;justify-content:space-between;align-items:center;margin:0.6rem 0;font-size:0.95rem;color:#5e0818;';
-        const left = document.createElement('div');
-        if (result.productName) left.innerHTML = `<strong style="color:#b07c1e;">${result.productName}</strong>`;
-        const right = document.createElement('div');
-        right.style = 'color:#666;font-size:0.9rem;';
-        right.textContent = formatDate(result.timestamp);
-        metaRow.appendChild(left);
-        metaRow.appendChild(right);
-        list.appendChild(metaRow);
-
-        // Allergies list for this result
-        (result.allergies || []).forEach(item => {
-          const li = document.createElement('li');
-          li.className = 'flagged-item ' + getSeverityClass(item.severity);
-          li.innerHTML = `
-            <span class="flagged-icon">⚠️</span>
-            <div class="flagged-details">
-              <span class="flagged-allergen">${item.allergen}</span>
-              <span class="flagged-severity">${item.severity}</span>
-              <div class="flagged-source">Source: ${item.source || 'Unknown'}${item.productName ? ` | Product: <span style='color:#b07c1e;'>${item.productName}</span>` : ''}</div>
-            </div>
-          `;
-          list.appendChild(li);
+      try {
+        // Fetch data from the new server endpoint
+        const response = await fetch(`${BACKEND_URL}/products/getDetectionResults`, {
+          credentials: "include"
         });
-      });
-    }
+        console.log('Response Status:', response.status); //for errr checking
+        console.log('Response OK:', response.ok); //for err checking 
+        if (!response.ok) {
+          if (response.status === 401) {
+            alert("Please log in to view your results.");
+            window.location.href = "login.html";
+            return;
+          }
+          throw new Error('Failed to fetch results');
+        }
 
+        const results = await response.json();
+
+        if (results.length === 0) {
+          noFlags.style.display = '';
+          return;
+        }
+
+        results.forEach(result => {
+          // Assuming result.products is an array and we want the first item
+          const product = result.products[0];
+          if (!product) return;
+
+          const metaRow = document.createElement('div');
+          metaRow.style = 'display:flex;justify-content:space-between;align-items:center;margin:0.6rem 0;font-size:0.95rem;color:#5e0818;';
+          const left = document.createElement('div');
+          if (product.name) left.innerHTML = `<strong style="color:#b07c1e;">${product.name}</strong>`;
+          const right = document.createElement('div');
+          right.style = 'color:#666;font-size:0.9rem;';
+          right.textContent = formatDate(result.createdAt);
+          metaRow.appendChild(left);
+          metaRow.appendChild(right);
+          list.appendChild(metaRow);
+
+          (product.flaggedAllergens || []).forEach(item => {
+            const li = document.createElement('li');
+            li.className = 'flagged-item ' + getSeverityClass(item.severity);
+            li.innerHTML = `
+                        <span class="flagged-icon">⚠️</span>
+                        <div class="flagged-details">
+                            <span class="flagged-allergen">${item.allergen}</span>
+                            <span class="flagged-severity">${item.severity}</span>
+                            <div class="flagged-source">Source: ${result.source || 'Unknown'} | Product: <span style='color:#b07c1e;'>${product.name}</span></div>
+                        </div>
+                    `;
+            list.appendChild(li);
+          });
+        });
+
+      } catch (err) {
+        console.error("Error fetching results:", err);
+        list.innerHTML = "<p>Failed to load results. Please try again later.</p>";
+        noFlags.style.display = 'none';
+      }
+    }
     // Run on load
     renderFlaggedAllergies();
   </script>

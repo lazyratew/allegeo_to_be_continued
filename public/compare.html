@@ -32,22 +32,13 @@
       <a href="compare.html" class="active">Compare</a>
       <a href="dashboard.html">Edit Profile</a>
     </div>
-
-    <!-- Search -->
-    <form class="search-bar" onsubmit="event.preventDefault(); searchProduct();">
-      <input type="text" id="searchInput" placeholder="Search for a product..." aria-label="Search for a product"
-        autocomplete="off" />
-      <button type="submit" aria-label="Search">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24">
-          <circle cx="11" cy="11" r="7" stroke="white" stroke-width="2" />
-          <path d="M20 20l-3.5-3.5" stroke="white" stroke-width="2" stroke-linecap="round" />
-        </svg>
-      </button>
-    </form>
-
-    <!-- Results -->
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search for a product...">
+      <button type="button" onclick="searchProduct()">Search</button>
+    </div>
     <div id="results"></div>
   </div>
+
 
   <div class="bottom-nav">
     <a href="profile.html" class="nav-item" title="Profile">
@@ -118,7 +109,7 @@
       }
     }
 
-    async function searchProduct() { //need to add try-catch incase of a fetch err
+    async function searchProduct() { // takes entire list of products from the OpenFoodFacts, saves in SearchHistory. 
       const query = document.getElementById("searchInput").value;
       if (!query) return;
 
@@ -156,7 +147,7 @@
             ing => `<div class="ingredient">${ing}</div>`
           ).join("");
 
-          const card = `
+          const card = ` 
       <label class="card">
         <input type="radio" name="productSelect" onchange="setSelectedProduct(${index})">
         <div class="card-content">
@@ -186,50 +177,31 @@
     }
 
     async function confirmSelection() {
-      if (!resultsDiv) resultsDiv = document.getElementById("results");
-      if (!resultsDiv) return console.error("❌ resultsDiv not found in DOM.");
-
       if (!selectedProduct) {
-        alert("Please select a product first.");
+        alert("Please select a product:");
         return;
       }
-
-      // Only redirect to results.html, do not show flagged results here anymore
-      const flaggedAllergens = selectedProduct.flaggedAllergens || [];
-      try {
-        await fetch(`${BACKEND_URL}/products/storeSelected`, {
+      try {  // 1. Post the selected product to the backend for detection and saving
+        const res = await fetch(`${BACKEND_URL}/products/saveDetection`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
           body: JSON.stringify({ product: selectedProduct })
         });
-
-        // ensure helper loaded for grouped results
-        //i dont know if this is in the correct place
-        (function () { const s = document.createElement('script'); s.src = 'flaggedHelper.js'; s.defer = true; document.head.appendChild(s); })();
-
-        // Push grouped result via helper, then redirect to results page
-        const flaggedArr = flaggedAllergens.map(f => ({
-          allergen: f.allergen,
-          severity: f.severity,
-          source: 'Compare',
-          productName: selectedProduct.name || ''
-        }));
-        if (window.pushFlaggedAllergyResult) {
-          window.pushFlaggedAllergyResult({ productName: selectedProduct.name || '', allergies: flaggedArr, source: 'compare' });
-        } else {
-          // fallback to legacy keys
-          localStorage.setItem('flaggedAllergies', JSON.stringify(flaggedArr));
-          localStorage.setItem('flaggedProductName', selectedProduct.name || '');
+        if (!res.ok) {
+          throw new Error(`Server responded with status: ${res.status}`);
         }
+
         window.location.href = 'results.html';
       } catch (err) {
         console.error("Failed to store selected product:", err);
-      }
+        alert("Failed to store product selection. Please try again.");
     }
+}
 
     // Run login check on page load
     checkLogin();
   </script>
 </body>
+
 </html>

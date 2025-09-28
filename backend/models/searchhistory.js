@@ -9,7 +9,7 @@ const searchHistorySchema = new mongoose.Schema({
     type: String,
     required: true, // the search term typed by the user
   },
-  results: [
+  Search_results: [
     {
       productId: String,  //OpenFoodFacts product id 
       name: String,       // product name
