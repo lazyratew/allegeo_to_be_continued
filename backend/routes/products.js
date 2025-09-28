@@ -102,7 +102,7 @@ router.post('/saveDetection', async (req, res) => {
       email,
       source: 'compare',
       query: product.name.toLowerCase(),
-      inputText: ingredientText,
+      inputText: null,
       products: [{
         productId: product.productId || product._id || product.code || "",
         name: product.name,
