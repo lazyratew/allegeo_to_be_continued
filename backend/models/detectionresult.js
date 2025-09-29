@@ -19,7 +19,7 @@ const ProductMatchSchema = new Schema({
 
 const DetectionResultSchema = new Schema({
   email: { type: String, required: true, index: true },
-   source: { type: String, enum: ['compare', 'scanpage:manual', 'scanpage:OCR'], required: true }, //shows source of where the result came from
+   source: { type: String, enum: ['compare', 'scanpage: manual', 'scanpage: OCR'], required: true }, //shows source of where the result came from
   query: String,       // only for compare searches
   inputText: String,   // OCR text for scans
   products: [ProductMatchSchema], // for compare results (can be empty for scan)
