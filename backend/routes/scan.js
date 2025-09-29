@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
-const Scan = require('../models/scan');
+const Scan = require('../models/scans');
 const DetectionResult = require('../models/detectionresult');
 const { detectAllergensInText } = require('../utils/detectionLogic');
 const { getUserAllergiesById } = require('../utils/userAllergyHelp');
