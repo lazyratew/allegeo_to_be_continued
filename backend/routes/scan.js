@@ -74,7 +74,7 @@ router.post('/analyze-image', async (req, res) => {
     }
 
     // Process and save using the common function
-    await processAndSaveScan(parsedText, req, 'scanned_ocr');
+    await processAndSaveScan(parsedText, req, 'scanpage: OCR');
 
     res.json({ success: true, message: "Image analyzed successfully." });
   } catch (err) {
@@ -91,7 +91,7 @@ router.post('/analyze-text', async (req, res) => {
     }
     
     // Process and save using the common function
-    await processAndSaveScan(text, req, 'scan_manual');
+    await processAndSaveScan(text, req, 'scanpage: manual');
 
     res.json({ success: true, message: "Text analyzed successfully." });
   } catch (err) {
