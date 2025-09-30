@@ -111,10 +111,12 @@
         "Strawberries", "Salmon", "Peach", "Lupin", "Celery",
         "Tomatoes", "Banana", "Garlic", "Kiwi", "Avacado", "Honey", "Yeast", "MSG", "Cocolate" 
     ];
+    const addedAllergies = new Set();
+    const container = document.getElementById('cardContainer');
   // Defensive: clear any allergy data from localStorage/sessionStorage on load
   localStorage.removeItem('allergies');
   sessionStorage.removeItem('allergies');
-  const addedAllergies = new Set();
+  
   const allergenIcons = {
       "Milk": "https://img.icons8.com/color/48/milk-bottle.png",
       "Egg": "https://cdn.britannica.com/94/151894-050-F72A5317/Brown-eggs.jpg",
