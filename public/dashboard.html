@@ -104,6 +104,13 @@
 
   <script>
   const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com";
+
+  const availableAllergies = [
+        "Milk", "Egg", "Peanuts", "Tree Nuts", "Sesame", "Soy",
+        "Fish", "Shellfish", "Gluten", "Mustard", "Corn",
+        "Strawberries", "Salmon", "Peach", "Lupin", "Celery",
+        "Tomatoes", "Banana", "Garlic", "Kiwi", "Avacado", "Honey", "Yeast", "MSG", "Cocolate" 
+    ];
   // Defensive: clear any allergy data from localStorage/sessionStorage on load
   localStorage.removeItem('allergies');
   sessionStorage.removeItem('allergies');
