@@ -32,7 +32,7 @@
     <!-- Camera Scan -->
     <div class="card">
       <h2>📸 Camera Scan</h2>
-      <input id="imageUpload" type="file" accept="image/*">
+      <input id="imageInput" type="file" accept="image/*">
       <div id="previewContainer"></div>
       <button onclick="processImage()">Analyze Image</button>
       <p id="ocrResult"></p>
@@ -92,49 +92,33 @@
   <script>
     const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com";
 
-    function processImage() {
-      const fileInput = document.getElementById("imageUpload");
+    async function analyzeImage() {
+      const fileInput = document.getElementById('imageInput');
       const file = fileInput.files[0];
-      if (!file) return alert("Please upload an image first");
+      if (!file) return alert('Please select an image file first.');
 
       const reader = new FileReader();
-      reader.onloadend = function () {
-        const base64Image = reader.result.split(',')[1]; // remove metadata
-        sendToServer(base64Image);
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function sendToServer(base64Image) {
-      fetch(`${BACKEND_URL}/api/scan/analyze-image`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ imageBase64: base64Image }),
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            document.getElementById('ocrResult').textContent = data.text;
-            // Store flagged allergens for results page
-            const flaggedToStore = (Array.isArray(data.flagged) ? data.flagged : []).map(f => ({
-              allergen: f.allergen,
-              severity: f.severity,
-              source: 'Scan',
-              matchedIngredient: f.matchedIngredient || '',
-              inputText: data.text || ''
-            }));
-            localStorage.setItem('flaggedAllergies', JSON.stringify(flaggedToStore));
-            localStorage.setItem('flaggedScanText', data.text || '');
+      reader.onloadend = async function () {
+        const imageBase64 = reader.result.replace('data:', '').replace(/^.+,/, '');
+        try {
+          const res = await fetch(`${BACKEND_URL}/api/scan/analyze-image`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ imageBase64: imageBase64 })
+          });
+          if (res.ok) {
             window.location.href = 'results.html';
           } else {
-            document.getElementById('ocrResult').textContent = 'Error processing image.';
+            const errorData = await res.json();
+            alert(`Failed to analyze image: ${errorData.error}`);
           }
-        })
-        .catch(err => {
-          console.error('Error:', err);
+        } catch (err) {
+          console.error(err);
           alert('Failed to analyze image.');
-        });
+        }
+      };
+      reader.readAsDataURL(file);
     }
 
     async function analyzeManualInput() {
@@ -147,22 +131,11 @@
           credentials: 'include',
           body: JSON.stringify({ text: input })
         });
-        const data = await res.json();
         if (res.ok) {
-          document.getElementById('manualResult').textContent = data.text || input;
-          // Store flagged allergens for results page
-          const flaggedToStore = (Array.isArray(data.flagged) ? data.flagged : []).map(f => ({
-            allergen: f.allergen,
-            severity: f.severity,
-            source: 'Scan',
-            matchedIngredient: f.matchedIngredient || '',
-            inputText: data.text || input
-          }));
-          localStorage.setItem('flaggedAllergies', JSON.stringify(flaggedToStore));
-          localStorage.setItem('flaggedScanText', data.text || input);
           window.location.href = 'results.html';
         } else {
-          document.getElementById('manualResult').textContent = 'Error analyzing input.';
+          const errorData = await res.json();
+          alert(`Failed to analyze input: ${errorData.error}`);
         }
       } catch (err) {
         console.error(err);
