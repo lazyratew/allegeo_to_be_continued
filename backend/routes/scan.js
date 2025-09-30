@@ -87,7 +87,7 @@ router.post('/analyze-image', async (req, res) => { //this is where the image is
     }
 
     // Process and save using the common function
-    await processAndSaveScan(parsedText, req, 'scanpage: OCR');
+    const { detectionId } = await processAndSaveScan(parsedText, req, 'scanpage: OCR');
 
     res.json({ success: true, message: "Image analyzed successfully.", detectionId: detectionId });
   } catch (err) {
@@ -102,11 +102,9 @@ router.post('/analyze-text', async (req, res) => {
     if (!text) {
       return res.status(400).json({ error: 'Text is required' });
     }
-
     // Process and save using the common function
-    await processAndSaveScan(text, req, 'scanpage: manual');
-
-     res.json({ success: true, message: "Text analyzed successfully.", detectionId: detectionId });
+    const { detectionId } = await processAndSaveScan(text, req, 'scanpage: manual');
+    res.json({ success: true, message: "Text analyzed successfully.", detectionId: detectionId });
   } catch (err) {
     console.error("❌ Error in /scan/analyze-text:", err);
     res.status(500).json({ error: "Internal server error" });
