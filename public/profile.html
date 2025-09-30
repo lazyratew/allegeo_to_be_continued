@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/profile.css">
 </head>
+
 <body>
 
   <!-- Navigation -->
@@ -20,8 +21,7 @@
       <img src="images/contact_icon.png" alt="Contact Us" class="contact-logo"
         style="height:48px;width:auto;margin-right:12px;vertical-align:middle;">
     </a>
-    <a href="login.html" class="nav-icon" title="Logout"
-      onclick="localStorage.removeItem('allergies'); sessionStorage.removeItem('allergies');">
+    <a href="#" id="logoutLink" class="nav-icon" title="Logout">
       <img src="images/logout_shiny.png" alt="Logout" class="logout-logo">
     </a>
   </nav>
@@ -153,7 +153,34 @@
         console.error("Error loading allergies:", err);
       }
     }
-    loadAllergies();
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Run the main page logic (Includes the 401 check for security)
+      loadAllergies();
+
+      // 2. Set up the Logout Listener (Fixes the "Uncaught Error")
+      const logoutLink = document.getElementById('logoutLink');
+
+      if (logoutLink) {
+        logoutLink.addEventListener('click', async (event) => {
+          event.preventDefault();
+
+          localStorage.removeItem('allergies');
+          sessionStorage.removeItem('allergies');
+
+          try {
+            await fetch(`${BACKEND_URL}/api/auth/logout`, {
+              method: 'POST',
+              credentials: 'include'
+            });
+          } catch (err) {
+            console.error("Logout network error (safely redirecting):", err);
+          }
+
+          // Final, guaranteed redirect
+          window.location.href = 'login.html';
+        });
+      }
+    });
   </script>
 </body>
 
