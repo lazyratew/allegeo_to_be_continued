@@ -118,6 +118,16 @@
         const res = await fetch(`${BACKEND_URL}/products/search?q=${encodeURIComponent(query)}`, {
           credentials: "include"
         });
+
+        if (res.status === 401) {
+          console.warn('User logged out. Stopping search.');
+          // Optional: Redirect the user to the login page if they are not already navigating
+          // window.location.href = 'login.html';
+          return;
+        }
+        if (!res.ok) {
+          throw new Error(`Server responded with status: ${res.status}`);
+        }
         const products = await res.json();
 
         resultsDiv = document.getElementById("results");

@@ -102,14 +102,14 @@
         const response = await fetch(`${BACKEND_URL}/products/getDetectionResults`, {
           credentials: "include"
         });
-        if (!response.ok) {
-          if (response.status === 401) {
-            alert("Please log in to view your results.");
-            window.location.href = "login.html";
-            return;
-          }
-          throw new Error('Failed to fetch results');
-        } 
+
+        if (response.status === 401) {
+          // This is expected during logout/session timeout. 
+          console.warn('User is logged out or session expired. Stopping result render.');
+          document.getElementById('flaggedList').innerHTML = '';
+          return;
+        }
+        if (!response.ok) throw new Error('Failed to fetch results with status: ' + response.status);
 
         const results = await response.json();
 
