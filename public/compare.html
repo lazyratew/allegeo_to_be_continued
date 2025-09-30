@@ -17,13 +17,14 @@
     </div>
     <a href="contact.html" class="nav-icon" title="Contact Us">
       <img src="images/contact_icon.png" alt="Contact Us" class="contact-logo"
-        style="height:32px;width:auto;margin-right:10px;vertical-align:middle;">
+        style="height:48px;width:auto;margin-right:12px;vertical-align:middle;">
     </a>
     <a href="login.html" class="nav-icon" title="Logout"
       onclick="localStorage.removeItem('allergies'); sessionStorage.removeItem('allergies');">
       <img src="images/logout_shiny.png" alt="Logout" class="logout-logo">
     </a>
   </nav>
+
 
   <div class="main">
     <h1>Compare Food Items</h1>
@@ -196,8 +197,8 @@
       } catch (err) {
         console.error("Failed to store selected product:", err);
         alert("Failed to store product selection. Please try again.");
+      }
     }
-}
 
     // Run login check on page load
     checkLogin();
