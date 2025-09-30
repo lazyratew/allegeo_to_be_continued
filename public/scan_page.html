@@ -93,6 +93,35 @@
   <script>
     const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com";
 
+    // Utility function to resize the image using canvas
+    function resizeImage(img, maxWidth, maxHeight) {
+      let width = img.width;
+      let height = img.height;
+
+      // Calculate new dimensions while maintaining aspect ratio
+      if (width > height) {
+        if (width > maxWidth) {
+          height = height * (maxWidth / width);
+          width = maxWidth;
+        }
+      } else {
+        if (height > maxHeight) {
+          width = width * (maxHeight / height);
+          height = maxHeight;
+        }
+      }
+
+      // Create a canvas, draw the resized image, and convert to Base64 (JPG format is smaller)
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // Convert canvas content to Base64 (using JPEG format and 0.7 quality)
+      return canvas.toDataURL('image/jpeg', 0.7);
+    }
+
     async function analyzeImage() {
       const fileInput = document.getElementById('imageInput');
       const file = fileInput.files[0];
@@ -100,25 +129,44 @@
 
       const reader = new FileReader();
       reader.onloadend = async function () {
-        const imageBase64 = reader.result.replace('data:', '').replace(/^.+,/, '');
-        try {
-          const res = await fetch(`${BACKEND_URL}/api/scan/analyze-image`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ imageBase64: imageBase64 })
-          });
-          if (res.ok) {
-            const data = await res.json(); 
-            window.location.href = `results.html?id=${data.detectionId}`;
-          } else {
-            const errorData = await res.json();
-            alert(`Failed to analyze image: ${errorData.error}`);
+        const img = new Image();
+        img.onload = async function () {
+          // Resize the image to a maximum of 1200x1200 pixels
+          const resizedDataURL = resizeImage(img, 1200, 1200);
+          // Extract the Base64 portion
+          const imageBase64 = resizedDataURL.replace(/^data:image\/(png|jpeg);base64,/, '');
+
+          try {
+            const res = await fetch(`${BACKEND_URL}/api/scan/analyze-image`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ imageBase64: imageBase64 })
+            });
+
+            if (res.ok) {
+              const data = await res.json();
+              // Fix: Redirect using the detectionId returned by the backend
+              window.location.href = `results.html?id=${data.detectionId}`;
+            } else {
+              // FIX: Robust error handling for non-JSON responses (like 413 HTML page)
+              if (res.status === 413) {
+                alert('Error 413: The image file is still too large. Please use a smaller file or ask the developer to increase the server payload limit.');
+              } else {
+                try {
+                  const errorData = await res.json();
+                  alert(`Failed to analyze image: ${errorData.error}`);
+                } catch (jsonErr) {
+                  alert(`An unexpected error occurred (Status: ${res.status}).`);
+                }
+              }
+            }
+          } catch (err) {
+            console.error(err);
+            alert('Failed to analyze image.');
           }
-        } catch (err) {
-          console.error(err);
-          alert('Failed to analyze image.');
-        }
+        };
+        img.src = reader.result;
       };
       reader.readAsDataURL(file);
     }
