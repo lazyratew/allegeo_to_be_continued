@@ -17,9 +17,10 @@
       <img src="images/allegeo_shiny.png" alt="Allegeo Logo" class="allegeo-logo">
     </div>
     <a href="contact.html" class="nav-icon" title="Contact Us">
-  <img src="images/contact_icon.png" alt="Contact Us" class="contact-logo" style="height:48px;width:auto;margin-right:12px;vertical-align:middle;">
+      <img src="images/contact_icon.png" alt="Contact Us" class="contact-logo"
+        style="height:48px;width:auto;margin-right:12px;vertical-align:middle;">
     </a>
-    <a href="login.html" class="nav-icon" title="Logout" onclick="localStorage.removeItem('allergies'); sessionStorage.removeItem('allergies');">
+    <a href="#" id="logoutLink" class="nav-icon" title="Logout">
       <img src="images/logout_shiny.png" alt="Logout" class="logout-logo">
     </a>
   </nav>
@@ -59,6 +60,13 @@
         <option value="Tomatoes">Tomatoes</option>
         <option value="Banana">Banana</option>
         <option value="Garlic">Garlic</option>
+        <option value="Kiwi">Kiwi</option>
+        <option value="Avacado">Avacado</option>
+        <option value="Onion">Onion</option>
+        <option value="Honey">Honey</option>
+        <option value="Yeast">Yeast</option>
+        <option value="MSG">Msg</option>
+        <option value="Chocolate">Chocolate</option>
       </select>
     </div>
 
@@ -70,32 +78,48 @@
     <div class="bottom-nav">
       <a href="profile.html" class="nav-item" title="Dashboard">
         <span class="icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4.5" fill="#FFD36E" stroke="#5e0818" stroke-width="1.5"/><path d="M4.5 20c0-3.59 3.13-6.5 7-6.5s7 2.91 7 6.5" fill="#B6E2D3" stroke="#5e0818" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="4.5" fill="#FFD36E" stroke="#5e0818" stroke-width="1.5" />
+            <path d="M4.5 20c0-3.59 3.13-6.5 7-6.5s7 2.91 7 6.5" fill="#B6E2D3" stroke="#5e0818" stroke-width="1.5"
+              stroke-linecap="round" />
+          </svg>
         </span>
-        <span class="nav-label">Dashboard</span>
+        <span class="nav-label">Profile</span>
       </a>
       <a href="compare.html" class="nav-item" title="Compare">
         <span class="icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" fill="#F9A1BC" stroke="#5e0818" stroke-width="1.5"/><path d="M20 20l-3.5-3.5" stroke="#5e0818" stroke-width="1.5" stroke-linecap="round"/><circle cx="11" cy="11" r="4" fill="#FFF" fill-opacity="0.5"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="7" fill="#F9A1BC" stroke="#5e0818" stroke-width="1.5" />
+            <path d="M20 20l-3.5-3.5" stroke="#5e0818" stroke-width="1.5" stroke-linecap="round" />
+            <circle cx="11" cy="11" r="4" fill="#FFF" fill-opacity="0.5" />
+          </svg>
         </span>
         <span class="nav-label">Compare</span>
       </a>
       <a href="results.html" class="nav-item" title="Results">
         <span class="icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="10" width="4" height="8" rx="1.5" fill="#B6E2D3" stroke="#5e0818" stroke-width="1.5"/><rect x="9.5" y="6" width="4" height="12" rx="1.5" fill="#FFD36E" stroke="#5e0818" stroke-width="1.5"/><rect x="16" y="13" width="4" height="5" rx="1.5" fill="#F9A1BC" stroke="#5e0818" stroke-width="1.5"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="10" width="4" height="8" rx="1.5" fill="#B6E2D3" stroke="#5e0818" stroke-width="1.5" />
+            <rect x="9.5" y="6" width="4" height="12" rx="1.5" fill="#FFD36E" stroke="#5e0818" stroke-width="1.5" />
+            <rect x="16" y="13" width="4" height="5" rx="1.5" fill="#F9A1BC" stroke="#5e0818" stroke-width="1.5" />
+          </svg>
         </span>
         <span class="nav-label">Results</span>
       </a>
       <a href="feedback.html" class="nav-item" title="Feedback">
         <span class="icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 19v-2.5A2.5 2.5 0 0 1 6.5 14h11A2.5 2.5 0 0 1 20 16.5V19" fill="#FFD36E" stroke="#5e0818" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="8" r="4" fill="#F9A1BC" stroke="#5e0818" stroke-width="1.5"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M4 19v-2.5A2.5 2.5 0 0 1 6.5 14h11A2.5 2.5 0 0 1 20 16.5V19" fill="#FFD36E" stroke="#5e0818"
+              stroke-width="1.5" stroke-linecap="round" />
+            <circle cx="12" cy="8" r="4" fill="#F9A1BC" stroke="#5e0818" stroke-width="1.5" />
+          </svg>
         </span>
         <span class="nav-label">Feedback</span>
       </a>
     </div>
   </main>
 
-  <script>
+ <script>
   const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com";
   // Defensive: clear any allergy data from localStorage/sessionStorage on load
   localStorage.removeItem('allergies');

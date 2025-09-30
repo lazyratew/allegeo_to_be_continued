@@ -23,6 +23,12 @@ nav {
     overflow: hidden;
 }
 
+.contact-logo {
+    height: 85px; 
+    width: auto;
+    display: block;
+}
+
 .allegeo-logo {
     height: 85px;
     width: auto;
@@ -118,6 +124,11 @@ nav {
     .allegeo-logo {
         height: 60px;
     }
+
+    .contact-logo {
+        height: 36px;
+    }
+
 
     .logout-logo {
         height: 36px;

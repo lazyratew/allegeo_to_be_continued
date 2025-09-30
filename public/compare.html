@@ -17,13 +17,13 @@
     </div>
     <a href="contact.html" class="nav-icon" title="Contact Us">
       <img src="images/contact_icon.png" alt="Contact Us" class="contact-logo"
-        style="height:32px;width:auto;margin-right:10px;vertical-align:middle;">
+        style="height:48px;width:auto;margin-right:12px;vertical-align:middle;">
     </a>
-    <a href="login.html" class="nav-icon" title="Logout"
-      onclick="localStorage.removeItem('allergies'); sessionStorage.removeItem('allergies');">
+    <a href="login.html" id="logoutLink" class="nav-icon" title="Logout">
       <img src="images/logout_shiny.png" alt="Logout" class="logout-logo">
     </a>
   </nav>
+
 
   <div class="main">
     <h1>Compare Food Items</h1>
@@ -32,10 +32,16 @@
       <a href="compare.html" class="active">Compare</a>
       <a href="dashboard.html">Edit Profile</a>
     </div>
-    <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Search for a product...">
-      <button type="button" onclick="searchProduct()">Search</button>
-    </div>
+    <form class="search-bar" onsubmit="event.preventDefault(); searchProducts();">
+      <input type="text" id="searchInput" placeholder="Search for a product..." aria-label="Search for a product"
+        autocomplete="off" />
+      <button type="submit" aria-label="Search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="7" stroke="white" stroke-width="2" />
+          <path d="M20 20l-3.5-3.5" stroke="white" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+    </form>
     <div id="results"></div>
   </div>
 
@@ -117,6 +123,16 @@
         const res = await fetch(`${BACKEND_URL}/products/search?q=${encodeURIComponent(query)}`, {
           credentials: "include"
         });
+
+        if (res.status === 401) {
+          console.warn('User logged out. Stopping search.');
+          // Optional: Redirect the user to the login page if they are not already navigating
+          // window.location.href = 'login.html';
+          return;
+        }
+        if (!res.ok) {
+          throw new Error(`Server responded with status: ${res.status}`);
+        }
         const products = await res.json();
 
         resultsDiv = document.getElementById("results");
@@ -196,9 +212,37 @@
       } catch (err) {
         console.error("Failed to store selected product:", err);
         alert("Failed to store product selection. Please try again.");
+      }
     }
-}
 
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Set up the Logout Listener
+      const logoutLink = document.getElementById('logoutLink');
+      if (logoutLink) {
+        logoutLink.addEventListener('click', async (event) => {
+          event.preventDefault(); // Stop the browser from navigating immediately
+
+          try {
+            // Clear local storage first
+            localStorage.removeItem('allergies');
+            sessionStorage.removeItem('allergies');
+
+            // Call the backend logout endpoint (This clears the server session)
+            const response = await fetch(`${BACKEND_URL}/api/auth/logout`, {
+              method: 'POST',
+              credentials: 'include'
+            });
+            // Note: If the backend successfully clears the session, the error is handled.
+          } catch (err) {
+            // Use a catch block to prevent any network/timing error from becoming "Uncaught"
+            console.error("Error during client-side logout process (safely redirecting):", err);
+          }
+
+          // 2. Redirect the user regardless, which is the final fix for the uncaught error
+          window.location.href = 'login.html';
+        });
+      }
+    });
     // Run login check on page load
     checkLogin();
   </script>
