@@ -30,7 +30,19 @@ const processAndSaveScan = async (text, req, source) => {
       scannedText: text,
       source: source,
     });
-    
+
+
+    const mockProductName = source.includes('OCR') ? 'Scanned Text from Image' : 'Manually Entered Text';
+
+    const productForDB = {
+      name: mockProductName,
+      flaggedAllergens: flagged.map(f => ({
+        ...f,
+        source: source
+      })),
+      // other product fields would go here if applicable
+    };
+
     // 4. Save detection result to `DetectionResult`
     await DetectionResult.create({
       email: userEmail,
@@ -42,7 +54,7 @@ const processAndSaveScan = async (text, req, source) => {
         source: source
       })),
     });
-    
+
     return flagged;
   } catch (err) {
     console.error("❌ Error processing text and detecting allergens:", err);
@@ -50,7 +62,7 @@ const processAndSaveScan = async (text, req, source) => {
   }
 };
 
-router.post('/analyze-image', async (req, res) => {
+router.post('/analyze-image', async (req, res) => { //this is where the image is sent to ocr.space
   try {
     const { imageBase64 } = req.body;
     if (!imageBase64) {
@@ -67,7 +79,7 @@ router.post('/analyze-image', async (req, res) => {
       }),
       { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
     );
-    
+
     const parsedText = response.data?.ParsedResults?.[0]?.ParsedText || "";
     if (!parsedText) {
       return res.status(400).json({ error: "Failed to read text from image. Please try a clearer image." });
@@ -89,7 +101,7 @@ router.post('/analyze-text', async (req, res) => {
     if (!text) {
       return res.status(400).json({ error: 'Text is required' });
     }
-    
+
     // Process and save using the common function
     await processAndSaveScan(text, req, 'scanpage: manual');
 
