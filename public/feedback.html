@@ -22,8 +22,7 @@
         style="height:48px;width:auto;margin-right:12px;vertical-align:middle;">
 
     </a>
-    <a href="login.html" class="nav-icon" title="Logout"
-      onclick="localStorage.removeItem('allergies'); sessionStorage.removeItem('allergies');">
+    <a href="login.html" id="logoutLink" class="nav-icon" title="Logout">
       <img src="images/logout_shiny.png" alt="Logout" class="logout-logo">
     </a>
   </nav>
@@ -123,7 +122,35 @@
         statusEl.style.color = 'red';
       }
     });
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Set up the Logout Listener
+      const logoutLink = document.getElementById('logoutLink');
+      if (logoutLink) {
+        logoutLink.addEventListener('click', async (event) => {
+          event.preventDefault(); // Stop the browser from navigating immediately
+
+          try {
+            // Clear local storage first
+            localStorage.removeItem('allergies');
+            sessionStorage.removeItem('allergies');
+
+            // Call the backend logout endpoint (This clears the server session)
+            const response = await fetch(`${BACKEND_URL}/api/auth/logout`, {
+              method: 'POST',
+              credentials: 'include'
+            });
+            // Note: If the backend successfully clears the session, the error is handled.
+          } catch (err) {
+            // Use a catch block to prevent any network/timing error from becoming "Uncaught"
+            console.error("Error during client-side logout process (safely redirecting):", err);
+          }
+
+          // 2. Redirect the user regardless, which is the final fix for the uncaught error
+          window.location.href = 'login.html';
+        });
+      }
+    });
   </script>
 </body>
 
-</html>
+</html> 
