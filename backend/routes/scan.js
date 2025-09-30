@@ -31,9 +31,7 @@ const processAndSaveScan = async (text, req, source) => {
       source: source,
     });
 
-
     const mockProductName = source.includes('OCR') ? 'Scanned Text from Image' : 'Manually Entered Text';
-
     const productForDB = {
       name: mockProductName,
       flaggedAllergens: flagged.map(f => ({
@@ -48,7 +46,7 @@ const processAndSaveScan = async (text, req, source) => {
       email: userEmail,
       source: source,
       inputText: text,
-      products: [],
+      products: [productForDB],
       flaggedSummary: flagged.map(f => ({
         ...f,
         source: source
