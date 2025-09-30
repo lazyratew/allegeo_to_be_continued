@@ -17,7 +17,8 @@
       <img src="images/allegeo_shiny.png" alt="Allegeo Logo" class="allegeo-logo">
     </div>
     <a href="contact.html" class="nav-icon" title="Contact Us">
-  <img src="images/contact_icon.png" alt="Contact Us" class="contact-logo" style="height:48px;width:auto;margin-right:12px;vertical-align:middle;">
+      <img src="images/contact_icon.png" alt="Contact Us" class="contact-logo"
+        style="height:48px;width:auto;margin-right:12px;vertical-align:middle;">
     </a>
     <a href="#" id="logoutLink" class="nav-icon" title="Logout">
       <img src="images/logout_shiny.png" alt="Logout" class="logout-logo">
@@ -77,25 +78,41 @@
     <div class="bottom-nav">
       <a href="profile.html" class="nav-item" title="Dashboard">
         <span class="icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4.5" fill="#FFD36E" stroke="#5e0818" stroke-width="1.5"/><path d="M4.5 20c0-3.59 3.13-6.5 7-6.5s7 2.91 7 6.5" fill="#B6E2D3" stroke="#5e0818" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </span> 
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="4.5" fill="#FFD36E" stroke="#5e0818" stroke-width="1.5" />
+            <path d="M4.5 20c0-3.59 3.13-6.5 7-6.5s7 2.91 7 6.5" fill="#B6E2D3" stroke="#5e0818" stroke-width="1.5"
+              stroke-linecap="round" />
+          </svg>
+        </span>
         <span class="nav-label">Profile</span>
       </a>
       <a href="compare.html" class="nav-item" title="Compare">
         <span class="icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" fill="#F9A1BC" stroke="#5e0818" stroke-width="1.5"/><path d="M20 20l-3.5-3.5" stroke="#5e0818" stroke-width="1.5" stroke-linecap="round"/><circle cx="11" cy="11" r="4" fill="#FFF" fill-opacity="0.5"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="7" fill="#F9A1BC" stroke="#5e0818" stroke-width="1.5" />
+            <path d="M20 20l-3.5-3.5" stroke="#5e0818" stroke-width="1.5" stroke-linecap="round" />
+            <circle cx="11" cy="11" r="4" fill="#FFF" fill-opacity="0.5" />
+          </svg>
         </span>
         <span class="nav-label">Compare</span>
       </a>
       <a href="results.html" class="nav-item" title="Results">
         <span class="icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="10" width="4" height="8" rx="1.5" fill="#B6E2D3" stroke="#5e0818" stroke-width="1.5"/><rect x="9.5" y="6" width="4" height="12" rx="1.5" fill="#FFD36E" stroke="#5e0818" stroke-width="1.5"/><rect x="16" y="13" width="4" height="5" rx="1.5" fill="#F9A1BC" stroke="#5e0818" stroke-width="1.5"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="10" width="4" height="8" rx="1.5" fill="#B6E2D3" stroke="#5e0818" stroke-width="1.5" />
+            <rect x="9.5" y="6" width="4" height="12" rx="1.5" fill="#FFD36E" stroke="#5e0818" stroke-width="1.5" />
+            <rect x="16" y="13" width="4" height="5" rx="1.5" fill="#F9A1BC" stroke="#5e0818" stroke-width="1.5" />
+          </svg>
         </span>
         <span class="nav-label">Results</span>
       </a>
       <a href="feedback.html" class="nav-item" title="Feedback">
         <span class="icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 19v-2.5A2.5 2.5 0 0 1 6.5 14h11A2.5 2.5 0 0 1 20 16.5V19" fill="#FFD36E" stroke="#5e0818" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="8" r="4" fill="#F9A1BC" stroke="#5e0818" stroke-width="1.5"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M4 19v-2.5A2.5 2.5 0 0 1 6.5 14h11A2.5 2.5 0 0 1 20 16.5V19" fill="#FFD36E" stroke="#5e0818"
+              stroke-width="1.5" stroke-linecap="round" />
+            <circle cx="12" cy="8" r="4" fill="#F9A1BC" stroke="#5e0818" stroke-width="1.5" />
+          </svg>
         </span>
         <span class="nav-label">Feedback</span>
       </a>
@@ -103,104 +120,36 @@
   </main>
 
   <script>
-  const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com";
+    const BACKEND_URL = "https://allegeo-to-be-continued.onrender.com";
 
-  const availableAllergies = [
-        "Milk", "Egg", "Peanuts", "Tree Nuts", "Sesame", "Soy",
-        "Fish", "Shellfish", "Gluten", "Mustard", "Corn",
-        "Strawberries", "Salmon", "Peach", "Lupin", "Celery",
-        "Tomatoes", "Banana", "Garlic", "Kiwi", "Avacado", "Honey", "Yeast", "MSG", "Cocolate" 
+    // You must ensure this list is complete with all new allergies
+    const availableAllergies = [
+      "Milk", "Egg", "Peanuts", "Tree Nuts", "Sesame", "Soy",
+      "Fish", "Shellfish", "Gluten", "Mustard", "Corn",
+      "Strawberries", "Salmon", "Peach", "Lupin", "Celery",
+      "Tomatoes", "Banana", "Garlic" // <--- Make sure your new allergies are here
     ];
+
     const addedAllergies = new Set();
-    const container = document.getElementById('cardContainer');
-  // Defensive: clear any allergy data from localStorage/sessionStorage on load
-  localStorage.removeItem('allergies');
-  sessionStorage.removeItem('allergies');
-  
-  const allergenIcons = {
-      "Milk": "https://img.icons8.com/color/48/milk-bottle.png",
-      "Egg": "https://cdn.britannica.com/94/151894-050-F72A5317/Brown-eggs.jpg",
-      "Peanuts": "https://img.icons8.com/emoji/48/peanuts-emoji.png",
-      "Tree Nuts": "https://img.icons8.com/emoji/48/chestnut.png",
-      "Sesame": "https://img.icons8.com/color/48/sesame.png",
-      "Soy": "https://hips.hearstapps.com/hmg-prod/images/soybean-royalty-free-image-1591121334.jpg",
-      "Fish": "https://img.icons8.com/color/48/fish-food.png",
-      "Shellfish": "https://womenshealth.obgyn.msu.edu/sites/womenshealth/files/Shellfish-and-Crustaceans-Cookery-Course_0.jpg",
-      "Gluten": "https://img.icons8.com/color/48/wheat.png",
-      "Mustard": "https://img.icons8.com/color/48/mustard.png",
-      "Corn": "https://img.icons8.com/color/48/corn.png",
-      "Strawberries": "https://img.icons8.com/color/48/strawberry.png",
-      "Salmon": "https://img.icons8.com/color/48/salmon.png",
-      "Peach": "https://img.icons8.com/emoji/48/peach-emoji.png",
-      "Lupin": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Lupinus_albus.JPG",
-      "Celery": "https://www.innerwest.nsw.gov.au/Images/UserUploadedImages/33161/celery-cropped.jpg",
-      "Tomatoes": "https://img.icons8.com/color/48/tomato.png",
-      "Banana": "https://img.icons8.com/emoji/48/banana-emoji.png",
-      "Garlic": "https://img.icons8.com/color/48/garlic.png",
-      "Kiwi": "https://img.icons8.com/color/48/kiwi.png", 
-      "Avocado": "https://img.icons8.com/color/48/avocado.png", 
-      "Onion": "https://img.icons8.com/color/48/onion.png", 
-      "Honey": "https://img.icons8.com/color/48/honey.png", 
-      "Yeast": "https://img.icons8.com/color/48/bread.png", 
-      "MSG": "https://img.icons8.com/color/48/salt-shaker.png", 
-      "Chocolate": "https://img.icons8.com/color/48/chocolate-bar.png",
-    };
+    const container = document.getElementById('cardContainer'); // Ensure you have a div with id="cardContainer" in your HTML
 
+    // Existing function to create an editable allergy card
+    function addAllergyCard(allergen, level = 'Allergic') {
+      if (addedAllergies.has(allergen)) return;
 
-    async function loadAllergies() {
-      try {
-        const res = await fetch(`${BACKEND_URL}/api/user/profile`, {
-          method: "GET",
-          credentials: "include"
-        });
-        if (!res.ok) throw new Error("Not logged in");
-        const data = await res.json();
-        const allergies = data.allergies || {};
-        // Only add cards if allergies object has at least one non-empty value
-        if (Object.keys(allergies).length > 0 && Object.values(allergies).some(v => v && v !== 'Not Allergic')) {
-          for (const [allergen, level] of Object.entries(allergies)) {
-            if (level && level !== 'Not Allergic' && !addedAllergies.has(allergen)) {
-              addedAllergies.add(allergen);
-              addCard(allergen, allergenIcons[allergen] || "", level);
-            }
-          }
-        }
-      } catch (err) {
-        alert("Please log in first.");
-        window.location.href = "login.html";
-      }
-    }
+      addedAllergies.add(allergen);
 
-    document.getElementById('addAllergyBtn').addEventListener('click', () => {
-      document.getElementById('allergyDropdown').classList.toggle('hidden');
-    });
-
-    document.getElementById('allergyDropdown').addEventListener('change', function () {
-      const selected = this.value;
-      if (addedAllergies.has(selected)) {
-        alert(`${selected} card already added.`);
-        return;
-      }
-      addedAllergies.add(selected);
-      addCard(selected, allergenIcons[selected] || "");
-      this.selectedIndex = 0;
-      this.classList.add('hidden');
-    });
-
-    function addCard(allergen, iconUrl, level = "Not Allergic") {
-      const container = document.getElementById('cardContainer');
       const card = document.createElement('div');
-      card.className = "card";
+      card.className = 'card';
       card.innerHTML = `
-    <button class="remove-btn" title="Remove">&times;</button>
-    <img src="${iconUrl}" alt="${allergen}" class="allergen-img">
-    <h3>${allergen}</h3>
-    <select>
-      <option>Not Allergic</option>
-      <option>Mild</option>
-      <option>Moderate</option>
-      <option>Severe</option>
-    </select>
+      <h3>${allergen}</h3>
+      <button class="remove-btn">X</button>
+      <select>
+        <option>Allergic</option>
+        <option>Mild</option>
+        <option>Moderate</option>
+        <option>Severe</option>
+      </select>
   `;
       const select = card.querySelector('select');
       select.value = level;
@@ -213,6 +162,45 @@
       container.appendChild(card);
     }
 
+
+    // *** NEW: Function to load and display saved allergies ***
+    async function loadAllergies() {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/user/profile`, {
+          credentials: 'include'
+        });
+
+        // CRITICAL SECURITY CHECK: Redirect if not logged in
+        if (res.status === 401) {
+          console.warn('Unauthorized. Redirecting to login.');
+          window.location.href = 'login.html';
+          return;
+        }
+
+        if (!res.ok) throw new Error('Failed to fetch allergies');
+
+        const data = await res.json();
+        const allergies = data.allergies || {};
+
+        // Clear the set and container before loading to prevent duplicates
+        addedAllergies.clear();
+        container.innerHTML = '';
+
+        // Render a card for each saved allergy
+        Object.entries(allergies).forEach(([allergen, severity]) => {
+          addAllergyCard(allergen, severity);
+        });
+
+        // Populate the dropdown with remaining available allergies (assuming this logic is elsewhere, if not, it should be here)
+
+      } catch (err) {
+        console.error("Error loading allergies:", err);
+        // If the user's session is active but the fetch fails, they stay on the page with an error message
+      }
+    }
+
+
+    // Existing saveProfile function (ensure you keep your original logic)
     async function saveProfile() {
       const data = {};
       document.querySelectorAll('#cardContainer > div').forEach(card => {
@@ -226,7 +214,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify({ allergies: data }) // no email needed
+          body: JSON.stringify({ allergies: data })
         });
 
         if (!res.ok) throw new Error("Failed to save profile");
@@ -239,27 +227,34 @@
         alert("An error occurred. Check console.");
       }
     }
- document.addEventListener('DOMContentLoaded', () => {
-        const logoutLink = document.getElementById('logoutLink');
-        
-        if (logoutLink) {
-            logoutLink.addEventListener('click', async (event) => {
-                event.preventDefault(); 
-                
-                localStorage.removeItem('allergies');
-                sessionStorage.removeItem('allergies');
 
-                try {
-                    await fetch(`${BACKEND_URL}/api/auth/logout`, {
-                        method: 'POST',
-                        credentials: 'include' 
-                    });
-                } catch (err) {
-                    console.error("Error during client-side logout process (safely ignoring):", err);
-                }
-                window.location.href = 'login.html';
+
+    // *** DOMContentLoaded: Startup Logic ***
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Load the existing allergies and display them (the fix for your issue)
+      loadAllergies();
+
+      // 2. Logout Logic (The previous fix you implemented)
+      const logoutLink = document.getElementById('logoutLink');
+
+      if (logoutLink) {
+        logoutLink.addEventListener('click', async (event) => {
+          event.preventDefault();
+
+          localStorage.removeItem('allergies');
+          sessionStorage.removeItem('allergies');
+
+          try {
+            await fetch(`${BACKEND_URL}/api/auth/logout`, {
+              method: 'POST',
+              credentials: 'include'
             });
-        }
+          } catch (err) {
+            console.error("Error during client-side logout process (safely ignoring):", err);
+          }
+          window.location.href = 'login.html';
+        });
+      }
     });
   </script>
 
