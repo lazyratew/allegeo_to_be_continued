@@ -42,7 +42,7 @@ const processAndSaveScan = async (text, req, source) => {
     };
 
     // 4. Save detection result to `DetectionResult`
-    await DetectionResult.create({
+    const newDetectionResult = await DetectionResult.create({ //made change for scan OCR to work
       email: userEmail,
       source: source,
       inputText: text,
@@ -53,7 +53,10 @@ const processAndSaveScan = async (text, req, source) => {
       })),
     });
 
-    return flagged;
+    return {
+      flagged: flagged,
+      detectionId: newDetectionResult._id.toString()
+    };
   } catch (err) {
     console.error("❌ Error processing text and detecting allergens:", err);
     throw err;
@@ -86,7 +89,7 @@ router.post('/analyze-image', async (req, res) => { //this is where the image is
     // Process and save using the common function
     await processAndSaveScan(parsedText, req, 'scanpage: OCR');
 
-    res.json({ success: true, message: "Image analyzed successfully." });
+    res.json({ success: true, message: "Image analyzed successfully.", detectionId: detectionId });
   } catch (err) {
     console.error("❌ Error in /scan/analyze-image:", err?.message || err);
     res.status(500).json({ error: 'Internal server error' });
@@ -103,7 +106,7 @@ router.post('/analyze-text', async (req, res) => {
     // Process and save using the common function
     await processAndSaveScan(text, req, 'scanpage: manual');
 
-    res.json({ success: true, message: "Text analyzed successfully." });
+     res.json({ success: true, message: "Text analyzed successfully.", detectionId: detectionId });
   } catch (err) {
     console.error("❌ Error in /scan/analyze-text:", err);
     res.status(500).json({ error: "Internal server error" });
