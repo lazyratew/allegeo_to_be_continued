@@ -16,11 +16,9 @@
       <img src="images/allegeo_shiny.png" alt="Allegeo Logo" class="allegeo-logo">
     </div>
     <a href="contact.html" class="nav-icon" title="Contact Us">
-      <img src="images/contact_icon.png" alt="Contact Us" class="contact-logo"
-        style="height:48px;width:auto;margin-right:12px;vertical-align:middle;">
+      <img src="images/contact_icon.png" alt="Contact Us" class="contact-logo">
     </a>
-    <a href="login.html" class="nav-icon" title="Logout"
-      onclick="localStorage.removeItem('allergies'); sessionStorage.removeItem('allergies');">
+    <a href="login.html" id="logoutLink" class="nav-icon" title="Logout">
       <img src="images/logout_shiny.png" alt="Logout" class="logout-logo">
     </a>
   </nav>
@@ -155,8 +153,33 @@
         noFlags.style.display = 'none';
       }
     }
-    // Run on load
-    renderFlaggedAllergies();
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Set up the Logout Listener (Fixes your TypeError)
+      const logoutLink = document.getElementById('logoutLink');
+      if (logoutLink) {
+        logoutLink.addEventListener('click', async (event) => {
+          event.preventDefault();
+          try {
+            localStorage.removeItem('allergies');
+            sessionStorage.removeItem('allergies');
+
+            // Call the backend logout endpoint
+            await fetch(`${BACKEND_URL}/api/auth/logout`, {
+              method: 'POST',
+              credentials: 'include'
+            });
+          } catch (err) {
+            console.error("Error during client-side logout process (safe to ignore if redirect works):", err);
+          }
+
+          // Redirect the user regardless of success
+          window.location.href = 'login.html';
+        });
+      } else {
+        console.error("Logout link not found in DOM.");
+      }
+      renderFlaggedAllergies();
+    });
   </script>
 </body>
 
