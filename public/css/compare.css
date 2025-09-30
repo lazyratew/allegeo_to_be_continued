@@ -1,62 +1,41 @@
 /* Styles specific to compare.html */
 .search-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #fff;
-    border-radius: 2rem;
-    box-shadow: 0 2px 12px rgba(212, 175, 55, 0.10), 0 1.5px 6px rgba(94, 8, 24, 0.07);
-    padding: 0.3rem 0.5rem 0.3rem 1rem;
-    margin-bottom: 1.5rem;
-    max-width: 500px;
+    display: flex; /* Makes the input and button line up */
     width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    transition: box-shadow 0.2s;
+    max-width: 600px; /* Limits size on desktop */
+    margin: 1.5rem auto; /* Centers it and adds vertical spacing */
+    border: 2px solid var(--burgundy);
+    border-radius: 1.5rem; /* Integrated rounded look */
+    overflow: hidden; 
+    box-sizing: border-box; /* Ensures padding doesn't push the bar past 100% width */
 }
 
-.search-bar:focus-within {
-    box-shadow: 0 4px 18px rgba(212, 175, 55, 0.18), 0 2px 8px rgba(94, 8, 24, 0.10);
-}
-
-.search-bar input {
-    flex: 1;
-    padding: 0.9rem 1.1rem;
+.search-bar input[type="text"] {
+    flex-grow: 1; 
     border: none;
-    border-radius: 2rem;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
     outline: none;
-    font-size: 1.1rem;
-    background: #f8f6f2;
-    color: var(--burgundy);
-    transition: background 0.2s;
-}
-
-.search-bar input:focus {
-    background: #fffbe7;
 }
 
 .search-bar button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.7rem 1.1rem;
-    margin-left: 0.3rem;
+    background-color: var(--burgundy);
+    color: white;
     border: none;
-    background: var(--burgundy);
-    color: var(--white);
-    border-radius: 2rem;
+    padding: 0.75rem 1rem;
     cursor: pointer;
-    font-size: 1.2rem;
-    transition: background 0.2s, box-shadow 0.2s;
-    box-shadow: 0 1px 4px rgba(94, 8, 24, 0.08);
+    display: flex;
+    align-items: center; 
+    justify-content: center;
 }
 
-.search-bar button:hover,
-.search-bar button:focus {
-    background: #7a0c25;
-    box-shadow: 0 2px 8px rgba(94, 8, 24, 0.13);
+@media (max-width: 600px) {
+    .search-bar {
+        max-width: 95%; 
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
-
 .tabs {
     display: flex;
     justify-content: center;
@@ -77,19 +56,3 @@
     font-weight: bold;
 }
 
-@media (max-width: 600px) {
-    .search-bar {
-        max-width: 98vw;
-        padding: 0.2rem 0.2rem 0.2rem 0.7rem;
-    }
-
-    .search-bar input {
-        font-size: 1rem;
-        padding: 0.7rem 0.7rem;
-    }
-
-    .search-bar button {
-        font-size: 1.1rem;
-        padding: 0.6rem 0.8rem;
-    }
-}
