@@ -12,6 +12,8 @@ const userinfoRouter = require('./routes/userinfo'); //file created for user inf
 const scanRouter = require('./routes/scan'); //for the scan_page.html file
 const productRoutes = require('./routes/products');
 const app = express();
+app.use(express.json({ limit: '1mb' })); 
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
 //for testing purposes delete later
 app.use(express.static(path.join(__dirname, '..', 'public')));
