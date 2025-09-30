@@ -101,8 +101,7 @@
   localStorage.removeItem('allergies');
   sessionStorage.removeItem('allergies');
   const addedAllergies = new Set();
-
-    const allergenIcons = {
+  const allergenIcons = {
       "Milk": "https://img.icons8.com/color/48/milk-bottle.png",
       "Egg": "https://cdn.britannica.com/94/151894-050-F72A5317/Brown-eggs.jpg",
       "Peanuts": "https://img.icons8.com/emoji/48/peanuts-emoji.png",
@@ -121,8 +120,16 @@
       "Celery": "https://www.innerwest.nsw.gov.au/Images/UserUploadedImages/33161/celery-cropped.jpg",
       "Tomatoes": "https://img.icons8.com/color/48/tomato.png",
       "Banana": "https://img.icons8.com/emoji/48/banana-emoji.png",
-      "Garlic": "https://img.icons8.com/color/48/garlic.png"
+      "Garlic": "https://img.icons8.com/color/48/garlic.png",
+      "Kiwi": "https://img.icons8.com/color/48/kiwi.png", 
+      "Avocado": "https://img.icons8.com/color/48/avocado.png", 
+      "Onion": "https://img.icons8.com/color/48/onion.png", 
+      "Honey": "https://img.icons8.com/color/48/honey.png", 
+      "Yeast": "https://img.icons8.com/color/48/bread.png", 
+      "MSG": "https://img.icons8.com/color/48/salt-shaker.png", 
+      "Chocolate": "https://img.icons8.com/color/48/chocolate-bar.png",
     };
+
 
     async function loadAllergies() {
       try {
