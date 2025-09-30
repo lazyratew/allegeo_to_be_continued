@@ -144,7 +144,6 @@
             // Use a catch block to prevent any network/timing error from becoming "Uncaught"
             console.error("Error during client-side logout process (safely redirecting):", err);
           }
-
           // 2. Redirect the user regardless, which is the final fix for the uncaught error
           window.location.href = 'login.html';
         });
