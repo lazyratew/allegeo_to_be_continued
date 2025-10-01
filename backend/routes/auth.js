@@ -85,7 +85,6 @@ router.post('/login', async (req, res) => {
         return res.status(500).json({ error: "Could not save session" });
       }
       console.log('✅ Login successful:', user.email);
-      // Always return hasAllergies (true if any allergy value is not empty and not 'Not Allergic')
       let hasAllergies = false;
       let allergiesObj = user.allergies;
       if (allergiesObj && typeof allergiesObj === 'object' && typeof allergiesObj.entries === 'function') {
