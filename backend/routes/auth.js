@@ -9,17 +9,17 @@ router.post('/signup', async (req, res) => {
     if (!email || !password || !username || !phone) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
-  // Check for duplicate email
-  const exists = await User.findOne({ email });
-  if (exists) return res.status(409).json({ error: 'User already exists' });
+    // Check for duplicate email
+    const exists = await User.findOne({ email });
+    if (exists) return res.status(409).json({ error: 'User already exists' });
 
-  // Check for duplicate username (case-insensitive)
-  const usernameExists = await User.findOne({ username: { $regex: `^${username}$`, $options: 'i' } });
-  if (usernameExists) return res.status(409).json({ error: 'Username already taken' });
+    // Check for duplicate username (case-insensitive)
+    const usernameExists = await User.findOne({ username: { $regex: `^${username}$`, $options: 'i' } });
+    if (usernameExists) return res.status(409).json({ error: 'Username already taken' });
 
-  // Store username in lowercase for consistency
-  const user = new User({ username: username.toLowerCase(), email, phone, password });
-  await user.save();
+    // Store username in lowercase for consistency
+    const user = new User({ username: username.toLowerCase(), email, phone, password });
+    await user.save();
 
     // Set session so user stays logged in after signup
     req.session.userId = user._id;
@@ -57,24 +57,23 @@ router.post('/signup', async (req, res) => {
   }
 });
 
- //login
+//login
 router.post('/login', async (req, res) => {
-  //added for console log 
-  console.log("Login endpoint hit")
+  const { email, password } = req.body; // 'email' from frontend is correct
+
   try {
-    const { email, password } = req.body;
+    // 1. Find user AND explicitly select the password hash
+    const user = await User.findOne({ email }).select('+password'); 
 
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password required' });
-    }
-
-    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ error: 'User not found' });
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    if (user.password !== password) {
-      return res.status(401).json({ error: 'Incorrect password' });
+    // 2. Use the new comparePassword method
+    const isMatch = await user.comparePassword(password); 
+
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
     //store session
     req.session.userId = user._id;
@@ -117,10 +116,10 @@ router.post('/login', async (req, res) => {
 router.post('/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) {
-      console.error("Error during session destruction:",err);
+      console.error("Error during session destruction:", err);
       return res.status(500).json({ error: 'Could not log out' });
     }
-    res.clearCookie('sid'); 
+    res.clearCookie('sid');
     res.json({ message: 'Logged out' });
   });
 });
