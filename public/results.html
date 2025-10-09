@@ -110,14 +110,19 @@
         if (!response.ok) throw new Error('Failed to fetch results with status: ' + response.status);
 
         const results = await response.json();
-        
+
 
         if (results.length === 0) {
           noFlags.style.display = '';
           return;
         }
 
-         if ((product.flaggedAllergens?.length || 0) === 0) {
+        results.forEach(result => {
+          // Assuming result.products is an array and we want the first item
+          const product = result.products[0];
+          if (!product) return;
+
+          if ((product.flaggedAllergens?.length || 0) === 0) {
             const li = document.createElement('li');
             li.className = 'flagged-item not-allergic'; // New class for no flags
             li.innerHTML = `
@@ -129,13 +134,8 @@
                   </div>
               `;
             list.appendChild(li);
-            return; 
+            return;
           }
-
-        results.forEach(result => {
-          // Assuming result.products is an array and we want the first item
-          const product = result.products[0];
-          if (!product) return;
 
           const metaRow = document.createElement('div');
           metaRow.style = 'display:flex;justify-content:space-between;align-items:center;margin:0.6rem 0;font-size:0.95rem;color:#5e0818;';
