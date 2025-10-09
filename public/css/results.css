@@ -137,6 +137,11 @@ h1 {
     color: #43a047;
 }
 
+.flagged-item.not-allergic .flagged-severity{
+    background-color: #d0eaff; 
+    color: #1890ff; 
+}
+
 .flagged-source {
     font-size: 0.95rem;
     color: #888;

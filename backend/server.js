@@ -17,9 +17,8 @@ app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
 //for testing purposes delete later
 app.use(express.static(path.join(__dirname, '..', 'public')));
-
 app.use(cors({
-  origin: ['https://allegeo.netlify.app', 'http://localhost:3000'],
+  origin: ['https://allegeo.netlify.app', 'http://localhost:3000', 'https://allegeo-to-be-continued.onrender.com'],
   credentials: true
 }));
 
