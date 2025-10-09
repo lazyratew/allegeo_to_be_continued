@@ -61,6 +61,36 @@ h1 {
     text-align: center;
 }
 
+
+/* Styling for the All Clear / No Flags Detected Message */
+.all-clear-box {
+    text-align: center;
+    padding: 30px;
+    border: 2px solid #4CAF50; 
+    border-radius: 10px;
+    background-color: #e8f5e9; 
+    margin-top: 20px;
+}
+
+.all-clear-box h2 {
+    color: #4CAF50;
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.all-clear-box p {
+    font-size: 1.2em;
+    margin-top: 15px;
+    color: #333;
+}
+
+.all-clear-box .input-text {
+    font-style: italic;
+    font-weight: bold;
+    color: #555;
+}
+
+
 .results-section {
     background: #fff;
     border-radius: 1.2rem;

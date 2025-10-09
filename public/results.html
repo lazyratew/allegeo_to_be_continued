@@ -116,6 +116,24 @@
           return;
         }
 
+        //no allergies detected code
+        if (flaggedSummary.length === 0) {
+          list.innerHTML = `
+                <div class="all-clear-box">
+                    <h2>✅ ALL CLEAR!</h2>
+                    <p>No listed allergens were detected in the ingredients of this item.</p>
+                    <p>
+                        Ingredients Checked: 
+                        <span class="input-text">${latestResult.inputText || 'Not Available'}</span>
+                    </p>
+                    <p style="font-size: 0.7em;">
+                        Always verify the physical label for potential cross-contamination warnings.
+                    </p>
+                </div>
+            `;
+          return; 
+        }
+
         results.forEach(result => {
           // Assuming result.products is an array and we want the first item
           const product = result.products[0];
