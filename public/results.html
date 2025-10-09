@@ -110,6 +110,7 @@
         if (!response.ok) throw new Error('Failed to fetch results with status: ' + response.status);
 
         const results = await response.json();
+        
 
         if (results.length === 0) {
           noFlags.style.display = '';
