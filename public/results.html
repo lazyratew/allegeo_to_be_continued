@@ -117,23 +117,36 @@
         }
 
         //no allergies detected code 
-        /*
-        if (flaggedSummary.length === 0) {
+
+        const latestResult = results[0];
+        // -------------------------------------------------------------------------
+
+        // --- START OF FIX: The All Clear Logic ---
+
+        // Count total flagged items across ALL products in the latest result
+        const totalFlags = latestResult.products.reduce((count, product) => {
+          // .flaggedAllergens is the array containing the flags for a specific product
+          // ?.length handles cases where flaggedAllergens might be null/undefined
+          return count + (product.flaggedAllergens?.length || 0);
+        }, 0);
+
+        // If NO flags were found, display the success message and EXIT.
+        if (totalFlags === 0) {
           list.innerHTML = `
                 <div class="all-clear-box">
                     <h2>✅ ALL CLEAR!</h2>
                     <p>No listed allergens were detected in the ingredients of this item.</p>
                     <p>
-                        Ingredients Checked: 
-                        <span class="input-text">${latestResult.inputText || 'Not Available'}</span>
+                        Source Checked: 
+                        <span class="input-text">${latestResult.source || 'N/A'}</span>
                     </p>
                     <p style="font-size: 0.7em;">
                         Always verify the physical label for potential cross-contamination warnings.
                     </p>
                 </div>
             `;
-          return; 
-        } */
+          return; // STOP EXECUTION
+        }
 
         results.forEach(result => {
           // Assuming result.products is an array and we want the first item
