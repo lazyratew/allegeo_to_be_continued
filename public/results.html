@@ -117,35 +117,19 @@
         }
 
         //no allergies detected code 
-
-        const latestResult = results[0];
-        // -------------------------------------------------------------------------
-
-        // --- START OF FIX: The All Clear Logic ---
-
-        // Count total flagged items across ALL products in the latest result
-        const totalFlags = latestResult.products.reduce((count, product) => {
-          // .flaggedAllergens is the array containing the flags for a specific product
-          // ?.length handles cases where flaggedAllergens might be null/undefined
-          return count + (product.flaggedAllergens?.length || 0);
-        }, 0);
-
-        // If NO flags were found, display the success message and EXIT.
-        if (totalFlags === 0) {
-          list.innerHTML = `
-                <div class="all-clear-box">
-                    <h2>✅ ALL CLEAR!</h2>
-                    <p>No listed allergens were detected in the ingredients of this item.</p>
-                    <p>
-                        Source Checked: 
-                        <span class="input-text">${latestResult.source || 'N/A'}</span>
-                    </p>
-                    <p style="font-size: 0.7em;">
-                        Always verify the physical label for potential cross-contamination warnings.
-                    </p>
+        if ((product.flaggedAllergens?.length || 0) === 0) {
+          const li = document.createElement('li');
+          li.className = 'flagged-item not-allergic'; // New class for no flags
+          li.innerHTML = `
+                <span class="flagged-icon">👍</span>
+                <div class="flagged-details">
+                    <span class="flagged-allergen">Not Allergic</span>
+                    <span class="flagged-severity blue-tag">None Detected</span>
+                    <div class="flagged-source">Source: ${result.source || 'Unknown'} | Product: <span style='color:#b07c1e;'>${product.name}</span></div>
                 </div>
             `;
-          return; // STOP EXECUTION
+          list.appendChild(li);
+          return; // Use 'return' here to skip the inner flag loop and move to the next result in the history.
         }
 
         results.forEach(result => {
