@@ -117,21 +117,20 @@
           return;
         }
 
-        //no allergies detected code 
-        if ((product.flaggedAllergens?.length || 0) === 0) {
-          const li = document.createElement('li');
-          li.className = 'flagged-item not-allergic'; // New class for no flags
-          li.innerHTML = `
-                <span class="flagged-icon">👍</span>
-                <div class="flagged-details">
-                    <span class="flagged-allergen">Not Allergic</span>
-                    <span class="flagged-severity blue-tag">None Detected</span>
-                    <div class="flagged-source">Source: ${result.source || 'Unknown'} | Product: <span style='color:#b07c1e;'>${product.name}</span></div>
-                </div>
-            `;
-          list.appendChild(li);
-          return; // Use 'return' here to skip the inner flag loop and move to the next result in the history.
-        }
+         if ((product.flaggedAllergens?.length || 0) === 0) {
+            const li = document.createElement('li');
+            li.className = 'flagged-item not-allergic'; // New class for no flags
+            li.innerHTML = `
+                  <span class="flagged-icon">👍</span>
+                  <div class="flagged-details">
+                      <span class="flagged-allergen">Not Allergic</span>
+                      <span class="flagged-severity blue-tag">None Detected</span>
+                      <div class="flagged-source">Source: ${result.source || 'Unknown'} | Product: <span style='color:#b07c1e;'>${product.name}</span></div>
+                  </div>
+              `;
+            list.appendChild(li);
+            return; 
+          }
 
         results.forEach(result => {
           // Assuming result.products is an array and we want the first item
