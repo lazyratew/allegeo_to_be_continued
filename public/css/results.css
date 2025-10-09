@@ -61,17 +61,6 @@ h1 {
     text-align: center;
 }
 
-.blue-tag {
-    background-color: #1890ff; /* Blue background */
-    color: white;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-weight: 600;
-    font-size: 0.75em;
-    margin-left: 10px;
-    white-space: nowrap;
-}
-
 .results-section {
     background: #fff;
     border-radius: 1.2rem;
@@ -146,6 +135,11 @@ h1 {
 .flagged-item.mild .flagged-severity {
     background: #e6f9f0;
     color: #43a047;
+}
+
+.flagged-item.not-allergic .flagged-severity{
+    background-color: #d0eaff; 
+    color: #1890ff; 
 }
 
 .flagged-source {
